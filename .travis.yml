@@ -1,10 +1,11 @@
 language: go
 
 env:
-  # Force-enable Go modules. This will be unnecessary when Go 1.12 lands.
-  - GO111MODULE=on
-  # Database for tests.
-  - CTF_DB_DSN='postgres://postgres:@localhost:5432/ctfzone_test?sslmode=disable'
+  global:
+    # Force-enable Go modules. This will be unnecessary when Go 1.12 lands.
+    - GO111MODULE=on
+    # Database for tests.
+    - CTF_DB_DSN='postgres://postgres:@localhost:5432/ctfzone_test?sslmode=disable'
 
 go:
   - 1.11.x
