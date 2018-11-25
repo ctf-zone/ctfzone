@@ -102,7 +102,7 @@ func TestAuthLogin_NotActivated(t *testing.T) {
 			"password": "217",
 		}).
 		Expect().
-		Status(401)
+		Status(422)
 
 	res.JSON().Path("$.error").String().Equal(ErrAccountIsNotActivated.Msg)
 }
