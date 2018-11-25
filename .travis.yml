@@ -18,9 +18,11 @@ git:
 services:
   - postgresql
 
+addons:
+  postgresql: 9.6
+
 before_script:
   - psql -c 'create database ctfzone_test;' -U postgres
 
 script:
-  - env
   - make test
