@@ -1,0 +1,23 @@
+:root {
+  /* TEXT COLORS */
+  --heading-color:        color-mod(#000 alpha(85%));
+  --text-color:           color-mod(#000 alpha(65%));
+  --text-color-secondary: color-mod(#000 alpha(45%));
+
+  --heading-color-dark:        color-mod(#fff alpha(100%));
+  --text-color-dark:           color-mod(#fff alpha(85%));
+  --text-color-secondary-dark: color-mod(#fff alpha(65%));
+
+
+  /* BACKGROUND COLORS */
+  --dark-background: #001529;
+  --light-background: #f8f8f8;
+  --trigger-background: #002140;
+
+  /* FILTER ICON */
+  --filter-color-active: #108ee9;
+  --filter-color-inactive: #aaa;
+
+  /* FORM */
+  --field-border-color: #d9d9d9;
+}

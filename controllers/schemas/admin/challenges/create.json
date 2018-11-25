@@ -1,0 +1,41 @@
+{
+  "title": "AdminChallengesCreate",
+  "description": "Challenge create request",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "points": {
+      "type": "number"
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": ["easy", "medium", "hard"]
+    },
+    "flag": {
+        "type": "string"
+    },
+    "isLocked": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "title",
+    "categories",
+    "points",
+    "difficulty",
+    "flag",
+    "isLocked"
+  ]
+}

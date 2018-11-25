@@ -1,0 +1,38 @@
+{
+  "title": "ScoresCTFTime",
+  "description": "List of scores in CTFTime format (https://ctftime.org/json-scoreboard-feed)",
+  "type": "object",
+  "properties": {
+    "standings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "team": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number"
+          },
+          "pos": {
+            "type": "number"
+          },
+          "lastAccept": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "pos",
+          "score",
+          "team",
+          "lastAccept"
+        ]
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "standings"
+  ]
+}

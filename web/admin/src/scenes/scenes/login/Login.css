@@ -1,0 +1,14 @@
+.page {
+  height: 100vh;
+  background-color: var(--light-background);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form {
+  width: 300px;
+  padding: 20px;
+  box-shadow: 0 0 100px rgba(0, 0, 0, .08);
+  background-color: var(--dark-background);
+}

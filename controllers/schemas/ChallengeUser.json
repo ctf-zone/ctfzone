@@ -1,0 +1,18 @@
+{
+  "title": "ChallengeUser",
+  "description": "Challenge metadata for current user",
+  "type": "object",
+  "properties": {
+    "isSolved": {
+      "type": "boolean"
+    },
+    "isLiked": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "isSolved",
+    "isLiked"
+  ]
+}

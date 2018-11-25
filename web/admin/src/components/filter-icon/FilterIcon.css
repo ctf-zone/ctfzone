@@ -1,0 +1,7 @@
+.active {
+  color: var(--filter-color-active) !important;
+}
+
+.inactive {
+  color: var(--filter-color-inactive) !important;
+}

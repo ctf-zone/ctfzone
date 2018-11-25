@@ -1,0 +1,22 @@
+[
+  {
+    "title": "Users",
+    "path": "/users",
+    "icon": "team"
+  },
+  {
+    "title": "Challenges",
+    "path": "/challenges",
+    "icon": "bulb"
+  },
+  {
+    "title": "Announcements",
+    "path": "/announcements",
+    "icon": "notification"
+  },
+  {
+    "title": "Files",
+    "path": "/files",
+    "icon": "file"
+  }
+]

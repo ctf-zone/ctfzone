@@ -1,0 +1,20 @@
+{
+  "title": "AnnouncementUpdateRequest",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string"
+    },
+    "challengeId": {
+      "type": "integer",
+      "minimum": 1
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "title"
+  ]
+}

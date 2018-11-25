@@ -1,0 +1,25 @@
+{
+  "title": "GameInfo",
+  "description": "Game information",
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["countdown", "started", "ended"]
+    },
+    "start": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "end": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "status",
+    "start",
+    "end"
+  ]
+}

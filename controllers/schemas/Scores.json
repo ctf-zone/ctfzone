@@ -1,0 +1,8 @@
+{
+  "title": "Scores",
+  "description": "List of scores",
+  "type": "array",
+  "items": {
+    "$ref": "file:///Score.json"
+  }
+}

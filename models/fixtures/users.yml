@@ -1,0 +1,49 @@
+- id: 1
+  name: LC↯BC
+  email: lcbc@mail.com
+  password_hash: '$2a$10$tp5jB2UF05bQq2TXxrgiE.QeNZM1Xws0ST8KOPjLe74lmRNFfZodO'
+  extra:
+    country: ru
+  is_activated: true
+  created_at: RAW=NOW() AT TIME ZONE 'UTC'
+  updated_at: RAW=NOW() AT TIME ZONE 'UTC'
+
+- id: 2
+  name: PPP
+  email: ppp@mail.com
+  password_hash: '$2a$10$VVfUYQGziVC5RPUbFi6zQu8WbXxuQ2JlBNIpFfdzIayXNcxPX1R0K'
+  extra:
+    country: us
+  is_activated: true
+  created_at: RAW=NOW() AT TIME ZONE 'UTC'
+  updated_at: RAW=NOW() AT TIME ZONE 'UTC'
+
+- id: 3
+  name: Dragon Sector
+  email: dragonsector@mail.com
+  password_hash: '$2a$10$lvbGv1KdoLe2uJUFmvZUN.Qcfbetvajwk4aOVG7DSUT/jSFEWf8Zm'
+  extra:
+    country: pl
+  is_activated: true
+  created_at: RAW=NOW() AT TIME ZONE 'UTC'
+  updated_at: RAW=NOW() AT TIME ZONE 'UTC'
+
+- id: 4
+  name: '217'
+  email: 217@mail.com
+  password_hash: '$2a$10$9T8rX6PukjyGk21zO2jRyuxmibC.PoXdoefeLE3/yJKARGc.qTWra'
+  extra:
+    country: tw
+  is_activated: false
+  created_at: RAW=NOW() AT TIME ZONE 'UTC'
+  updated_at: RAW=NOW() AT TIME ZONE 'UTC'
+
+- id: 5
+  name: 'TokyoWesterns'
+  email: 'tokyowesterns@mail.com'
+  password_hash: '$2a$10$Y9YU0OQV4/hjKrSXiQi5leO7/RRlbxr221jB9A0.vvGBNXpeONJN6'
+  extra:
+    country: jp
+  is_activated: true
+  created_at: RAW=NOW() AT TIME ZONE 'UTC'
+  updated_at: RAW=NOW() AT TIME ZONE 'UTC'

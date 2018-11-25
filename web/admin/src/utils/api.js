@@ -1,0 +1,19 @@
+import axios from 'axios'
+
+export default axios.create({
+  baseURL: process.env.API_URL,
+  xsrfCookieName: 'csrf-token',
+  xsrfHeaderName: 'X-CSRF-Token',
+  withCredentials: true,
+})
+
+export class ApiError extends Error {
+  constructor(status, message, errors) {
+    super('ApiError')
+    Error.captureStackTrace(this, ApiError)
+
+    this.status = status
+    this.message = message
+    this.errors = errors
+  }
+}

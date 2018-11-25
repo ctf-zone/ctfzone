@@ -1,0 +1,44 @@
+{
+  "title": "User",
+  "description": "User model",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "password": {
+      "type": "string",
+      "minLength": 8
+    },
+    "isActivated": {
+      "type": "boolean"
+    },
+    "extra": {
+      "type": "object"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "name",
+    "email",
+    "extra",
+    "isActivated"
+  ]
+}

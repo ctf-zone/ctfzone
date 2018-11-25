@@ -1,0 +1,20 @@
+{
+  "title": "ChallengeE",
+  "description": "Challenge Extended model",
+  "type": "object",
+  "properties": {
+    "challenge": {
+      "$ref": "file:///Challenge.json"
+    },
+    "meta": {
+      "$ref": "file:///ChallengeMeta.json"
+    },
+    "user": {
+        "$ref": "file:///ChallengeUser.json"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "challenge"
+  ]
+}

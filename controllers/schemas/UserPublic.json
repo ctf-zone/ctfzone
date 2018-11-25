@@ -1,0 +1,23 @@
+{
+  "title": "UserPublic",
+  "description": "User public model",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "name": {
+      "type": "string"
+    },
+    "extra": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "name",
+    "extra"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "title": "AdminsUsersGetOne",
+  "description": "Get one user respones",
+  "type": "array",
+  "items": {
+    "$ref": "file:///User.json"
+  }
+}

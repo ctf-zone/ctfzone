@@ -1,0 +1,25 @@
+{
+  "title": "Score",
+  "description": "Score model",
+  "type": "object",
+  "properties": {
+    "user": {
+      "$ref": "file:///UserPublic.json"
+    },
+    "score": {
+      "type": "number"
+    },
+    "rank": {
+      "type": "integer"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "user",
+    "score"
+  ]
+}

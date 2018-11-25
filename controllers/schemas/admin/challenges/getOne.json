@@ -1,0 +1,5 @@
+{
+  "title": "AdminChallengesGetOne",
+  "description": "Get one challenge response",
+  "$ref": "file:///ChallengeE.json"
+}

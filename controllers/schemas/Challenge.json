@@ -1,0 +1,51 @@
+{
+  "title": "Challenge",
+  "description": "Challenge model",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "number"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": ["easy", "medium", "hard"]
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "points": {
+      "type": "number"
+    },
+    "isLocked": {
+      "type": "boolean"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "title",
+    "description",
+    "difficulty",
+    "categories",
+    "points",
+    "createdAt",
+    "updatedAt"
+  ]
+}

@@ -1,0 +1,23 @@
+.dropdown {
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, .2);
+}
+
+.container {
+  padding: 15px;
+}
+
+.buttons {
+  padding: 7px 15px;
+  overflow: hidden;
+  border-top: 1px solid #e8e8e8;
+}
+
+.ok {
+  float: left;
+}
+
+.reset {
+  float: right;
+}

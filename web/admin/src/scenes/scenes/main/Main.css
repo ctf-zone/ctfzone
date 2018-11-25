@@ -1,0 +1,22 @@
+.layout {
+}
+
+.content {
+  padding: 24px;
+}
+
+.body {
+  padding: 10px;
+  background-color: #fff;
+}
+
+.spin {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main {
+  min-height: 100vh;
+}

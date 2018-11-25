@@ -1,0 +1,22 @@
+{
+  "title": "ChallengeMeta",
+  "description": "Challenge metadata",
+  "type": "object",
+  "properties": {
+    "solutionsCount": {
+      "type": "number"
+    },
+    "likesCount": {
+      "type": "number"
+    },
+    "hintsCount": {
+      "type": "number"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "solutionsCount",
+    "likesCount",
+    "hintsCount"
+  ]
+}

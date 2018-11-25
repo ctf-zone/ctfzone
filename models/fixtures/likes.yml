@@ -1,0 +1,3 @@
+- user_id: 1 # LC↯BC
+  challenge_id: 1 # web-100
+  created_at: RAW=NOW() AT TIME ZONE 'UTC'

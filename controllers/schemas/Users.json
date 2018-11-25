@@ -1,0 +1,8 @@
+{
+  "title": "Users",
+  "description": "List of users",
+  "type": "array",
+  "items": {
+    "$ref": "file:///User.json"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "title": "UserSolutionsCreate",
+  "description": "User solutions create request",
+  "type": "object",
+  "properties": {
+    "flag": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "flag"
+  ]
+}

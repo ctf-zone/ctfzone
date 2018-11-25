@@ -1,0 +1,35 @@
+# ==========
+# = Golang =
+# ==========
+
+# Test binary, build with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# ========
+# = Misc =
+# ========
+
+*.DS_Store
+
+# =======
+# = App =
+# =======
+
+# Env
+.env
+
+# TLS test file
+server.key
+server.crt
+
+# Binary
+ctfzone
+
+# Image
+ctfzone.tgz
+
+# Files
+files/

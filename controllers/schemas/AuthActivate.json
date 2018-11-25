@@ -1,0 +1,15 @@
+{
+  "title": "AuthActivate",
+  "description": "AuthActivate request schema",
+  "type": "object",
+  "properties": {
+    "token": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "token"
+  ]
+}

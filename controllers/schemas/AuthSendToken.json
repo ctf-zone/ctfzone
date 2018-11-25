@@ -1,0 +1,23 @@
+{
+  "title": "AuthSendToken",
+  "description": "AuthSendToken request schema",
+  "type": "object",
+  "properties": {
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "activate",
+        "reset"
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "email",
+    "type"
+  ]
+}

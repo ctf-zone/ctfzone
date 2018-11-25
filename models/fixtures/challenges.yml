@@ -1,0 +1,43 @@
+- id: 1
+  title: Web
+  categories: '{web}'
+  points: 100
+  description: Web challenge
+  difficulty: easy
+  flag_hash: 845151a1e2230f5cb2bf3f96354d4b82a4bd30ee1b132469b2a4884ae50fe661
+  is_locked: false
+  created_at: RAW=NOW() AT TIME ZONE 'UTC'
+  updated_at: RAW=NOW() AT TIME ZONE 'UTC'
+
+- id: 2
+  title: Reverse
+  categories: '{reverse}'
+  points: 200
+  description: Reverse challenge
+  difficulty: medium
+  flag_hash: 8633dd1332ede139ffa48af8ac62edf8ff76208dedbcf7a9abbbb3dc02bfc8f9
+  is_locked: false
+  created_at: RAW=NOW() AT TIME ZONE 'UTC'
+  updated_at: RAW=NOW() AT TIME ZONE 'UTC'
+
+- id: 3
+  title: Crypto
+  categories: '{crypto}'
+  points: 300
+  description: Crypto challenge
+  difficulty: medium
+  flag_hash: 39d5e8462b14a3694be559c51c4c150e5f201a6f7fc3b868acf01016271e3a07
+  is_locked: false
+  created_at: RAW=NOW() AT TIME ZONE 'UTC'
+  updated_at: RAW=NOW() AT TIME ZONE 'UTC'
+
+- id: 4
+  title: PWN
+  categories: '{pwn}'
+  points: 500
+  description: Pwn challenge
+  difficulty: hard
+  flag_hash: 49890eae64cefff4a47ad7975c319b813864dd1443205111c552795c194c56ac
+  is_locked: true
+  created_at: RAW=NOW() AT TIME ZONE 'UTC'
+  updated_at: RAW=NOW() AT TIME ZONE 'UTC'

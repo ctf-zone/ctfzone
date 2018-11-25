@@ -1,0 +1,31 @@
+{
+  "title": "AdminUserUpdate",
+  "description": "User update request",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "password": {
+      "type": "string",
+      "minLength": 8
+    },
+    "isActivated": {
+      "type": "boolean"
+    },
+    "extra": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "email",
+    "isActivated",
+    "extra"
+  ]
+}

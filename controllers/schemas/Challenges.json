@@ -1,0 +1,8 @@
+{
+  "title": "ChallengesExt",
+  "description": "List of challenges with metadata",
+  "type": "array",
+  "items": {
+    "$ref": "file:///ChallengeE.json"
+  }
+}

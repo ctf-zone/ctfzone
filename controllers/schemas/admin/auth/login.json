@@ -1,0 +1,14 @@
+{
+  "title": "AdminAuthLogin",
+  "description": "AdminAuthLogin request schema",
+  "type": "object",
+  "properties": {
+    "password": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "password"
+  ]
+}

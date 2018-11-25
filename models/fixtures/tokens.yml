@@ -1,0 +1,27 @@
+- id: 1
+  user_id: 4
+  token: 1534e7c3fc6b3dbb411a5170b5fa94cd95f324f1ca072853ab2cb34c1378c061
+  type: activate
+  expires_at: RAW=NOW() AT TIME ZONE 'UTC'
+  created_at: RAW=NOW() AT TIME ZONE 'UTC'
+
+- id: 2
+  user_id: 4
+  token: 5b2fae511a73355aff9a99b2164caa343889773150854d6160e4acc6c0137f17
+  type: activate
+  expires_at: RAW=NOW() AT TIME ZONE 'UTC' + INTERVAL '1 hour'
+  created_at: RAW=NOW() AT TIME ZONE 'UTC'
+
+- id: 3
+  user_id: 3
+  token: 150ef2dc5ab146ef23bc1a239fcb7f631006677453782dc779dc8a45a763751f
+  type: reset
+  expires_at: RAW=NOW() AT TIME ZONE 'UTC'
+  created_at: RAW=NOW() AT TIME ZONE 'UTC'
+
+- id: 4
+  user_id: 3
+  token: e2e5fbe043d0f05f37405f363a1f442124ea5de85f862e2138fcb5b9d6eff142
+  type: reset
+  expires_at: RAW=NOW() AT TIME ZONE 'UTC' + INTERVAL '1 hour'
+  created_at: RAW=NOW() AT TIME ZONE 'UTC'

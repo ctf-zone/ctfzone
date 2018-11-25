@@ -1,0 +1,16 @@
+@import '~codemirror/lib/codemirror.css';
+@import '~codemirror/theme/idea.css';
+
+.description-edit {
+  border: 1px solid var(--field-border-color);
+  border-radius: 4px;
+  line-height: 1.5 !important;
+}
+
+.description-preview {
+  border: 1px solid var(--field-border-color);
+  border-radius: 4px;
+  height: 302px;
+  overflow-y: scroll;
+  padding: 24px;
+}

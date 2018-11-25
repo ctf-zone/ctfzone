@@ -1,0 +1,28 @@
+{
+  "title": "AuthRegister",
+  "description": "AuthRegister request schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 3
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "password": {
+      "type": "string",
+      "minLength": 8
+    },
+    "extra": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "email",
+    "password"
+  ]
+}

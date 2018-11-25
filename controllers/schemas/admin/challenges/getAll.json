@@ -1,0 +1,8 @@
+{
+  "title": "AdminChallengesGetAll",
+  "description": "Get all challenges response",
+  "type": "array",
+  "items": {
+    "$ref": "file:///ChallengeE.json"
+  }
+}

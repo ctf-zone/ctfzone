@@ -1,0 +1,36 @@
+.sider {
+}
+
+.logo {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo img {
+  width: 60px;
+}
+
+.menu {
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--trigger-background);
+  color: var(--text-color-secondary-dark);
+  padding: 10px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.toggle:hover {
+  color: var(--text-color-dark);
+}
+
+.layout {
+  height: 100%;
+  background-color: var(--dark-background);
+}

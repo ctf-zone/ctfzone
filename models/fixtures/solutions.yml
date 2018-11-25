@@ -1,0 +1,31 @@
+- user_id: 1 # LC↯BC
+  challenge_id: 1 # web-100
+  created_at: RAW=NOW() AT TIME ZONE 'UTC'
+
+- user_id: 1 # LC↯BC
+  challenge_id: 3 # crypto-300
+  created_at: RAW=NOW() AT TIME ZONE 'UTC' + INTERVAL '1 second'
+
+- user_id: 2 # PPP
+  challenge_id: 1 # web-100
+  created_at: RAW=NOW() AT TIME ZONE 'UTC'
+
+- user_id: 2 # PPP
+  challenge_id: 3 # crypto-300
+  created_at: RAW=NOW() AT TIME ZONE 'UTC'
+
+- user_id: 3 # Dragon Sector
+  challenge_id: 1 # web-100
+  created_at: RAW=NOW() AT TIME ZONE 'UTC'
+
+- user_id: 3 # Dragon Sector
+  challenge_id: 2 # reverse-200
+  created_at: RAW=NOW() AT TIME ZONE 'UTC'
+
+- user_id: 5 # TokyoWesterns
+  challenge_id: 1 # web-100
+  created_at: RAW=NOW() AT TIME ZONE 'UTC' + INTERVAL '1 second'
+
+- user_id: 5 # TokyoWesterns
+  challenge_id: 3 # crypto-300
+  created_at: RAW=NOW() AT TIME ZONE 'UTC'

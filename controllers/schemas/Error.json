@@ -1,0 +1,32 @@
+{
+  "title": "Error",
+  "description": "Error information",
+  "type": "object",
+  "properties": {
+    "error": {
+      "type": "string"
+    },
+    "fields": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "error": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "field",
+          "error"
+        ]
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "error"
+  ]
+}

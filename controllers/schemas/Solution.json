@@ -1,0 +1,13 @@
+{
+  "title": "Solution",
+  "description": "Solution model",
+  "type": "object",
+  "properties": {
+    "user": {
+      "$ref": "file:///UserPublic.json"
+    },
+    "challenge": {
+      "$ref": "file:///ChallengeExt.json"
+    }
+  }
+}

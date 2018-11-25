@@ -1,0 +1,37 @@
+{
+  "title": "Announcement",
+  "description": "Announcement model",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "title": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "challengeId": {
+      "type": "integer",
+      "minimum": 1
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "title",
+    "body",
+    "createdAt",
+    "updatedAt"
+  ]
+}
