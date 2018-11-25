@@ -1,0 +1,24 @@
+language: go
+
+env:
+  # Force-enable Go modules. This will be unnecessary when Go 1.12 lands.
+  - GO111MODULE=on
+  # Database for tests.
+  - CTF_DB_DSN='postgres://postgres:@localhost:5432/ctfzone_test?sslmode=disable'
+
+go:
+  - 1.11.x
+
+# Only clone the most recent commit.
+git:
+  depth: 1
+
+# Setup services for tests.
+services:
+  - postgresql
+
+before_script:
+  - psql -c 'create database ctfzone_test;' -U postgres
+
+script:
+  - make test
