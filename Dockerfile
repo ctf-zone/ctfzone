@@ -28,7 +28,7 @@ USER ctfzone
 WORKDIR /home/ctfzone
 RUN mkdir -p files static/public static/admin
 COPY templates ./templates
-COPY --from=ui --chown=ctfzone:ctfzone /usr/src/public/dist static/public/
+COPY --from=ui --chown=ctfzone:ctfzone /usr/src/public/build static/public/
 COPY --from=ui --chown=ctfzone:ctfzone /usr/src/admin/dist static/admin/
 COPY --from=api --chown=ctfzone:ctfzone /go/src/github.com/ctf-zone/ctfzone/ctfzone .
 EXPOSE 8080 8443

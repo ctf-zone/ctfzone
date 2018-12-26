@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export default axios.create({
-  baseURL: process.env.API_URL,
+  baseURL: process.env.API_URL || '/api',
   xsrfCookieName: 'csrf-token',
   xsrfHeaderName: 'X-CSRF-Token',
   withCredentials: true
