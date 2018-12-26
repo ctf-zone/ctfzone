@@ -1,20 +1,20 @@
-import api from '~/utils/api'
+import api from '../utils/api';
 
 export default {
   state: {
-    items: [],
+    items: []
   },
   reducers: {
     set: (state, payload) => {
-      return { ...state, ...payload }
-    },
+      return { ...state, ...payload };
+    }
   },
   effects: {
     async list() {
-      const response = await api.get('scores')
-      const items = response.data
-      this.set({ items })
-      return items
-    },
-  },
-}
+      const response = await api.get('/scores');
+      const items = response.data;
+      this.set({ items });
+      return items;
+    }
+  }
+};

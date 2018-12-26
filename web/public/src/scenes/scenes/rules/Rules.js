@@ -1,10 +1,9 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import ReactMarkdown from 'react-markdown'
+import React, { Component } from 'react';
+import ReactMarkdown from 'react-markdown';
 
-import { Page } from '~/components'
+import { Page } from '../../../components';
 
+// TODO: get from API
 const rules = `
 Online-stage, starts on 20.10.2018 at 09:00 UTC and will last for 24 hours.
 Stage format – Jeopardy. Top 10 teams will be invited to the final.
@@ -32,32 +31,20 @@ which only depends on the amount of teams that has submitted the flag.
 Flag format: \`mctf{[a-f0-9]{32}}\`
 
 The organizers reserve the right to disqualify participants for violating the rules.
-`
+`;
 
-@connect(
-  (state) => ({
-  }),
-  (dispatch) => ({
-  })
-)
 class Rules extends Component {
+  static propTypes = {};
 
-  static propTypes = {
-  }
-
-  componentDidMount() {
-  }
+  componentDidMount() {}
 
   render() {
     return (
-      <Page
-        title='Rules'
-        type='rules'
-      >
+      <Page title="Rules" type="rules">
         <ReactMarkdown source={rules} />
       </Page>
-    )
+    );
   }
 }
 
-export default Rules
+export default Rules;

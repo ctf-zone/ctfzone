@@ -1,45 +1,45 @@
-import { stringify } from 'qs'
+import { stringify } from 'qs';
 
-import api from '~/utils/api'
+import api from '../utils/api';
 
 export default {
   state: {
     items: [],
-    hints: {},
+    hints: {}
   },
   reducers: {
     set: (state, payload) => {
-      return { ...state, ...payload }
+      return { ...state, ...payload };
     },
     setHints(state, { challengeId, hints }) {
       return {
         ...state,
         hints: {
           ...state.hints,
-          [challengeId]: hints,
-        },
-      }
-    },
+          [challengeId]: hints
+        }
+      };
+    }
   },
   effects: {
     async list({ link = null, filters = {} }) {
-      const query = stringify(filters)
-      const response = await api.get(link ||
-        query
-          ? `annonncements?${query}`
-          : 'announcements'
-      )
-      const items = response.data
+      const query = stringify(filters);
+      const response = await api.get(
+        link || query ? `/annonncements?${query}` : '/announcements'
+      );
+      const items = response.data;
 
-      this.set({ items })
+      this.set({ items });
 
-      return items
+      return items;
     },
     async getHints(challengeId) {
-      const response = await api.get(`announcements?challengeId=${challengeId}`)
-      const hints = response.data
-      this.setHints({ challengeId, hints })
-      return hints
-    },
-  },
-}
+      const response = await api.get(
+        `/announcements?challengeId=${challengeId}`
+      );
+      const hints = response.data;
+      this.setHints({ challengeId, hints });
+      return hints;
+    }
+  }
+};

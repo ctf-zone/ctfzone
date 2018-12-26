@@ -1,12 +1,9 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import React, { Component } from 'react';
 
 class Spinner extends Component {
   render() {
-    return (
-      <div className='ctf-spinner'></div>
-    )
+    return <div className="ctf-spinner" />;
   }
 }
 
-export default Spinner
+export default Spinner;
