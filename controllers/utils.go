@@ -14,6 +14,18 @@ func jsonDecode(r *http.Request, out interface{}) error {
 	return json.Unmarshal(body, out)
 }
 
+func requestHost(r *http.Request) (host string) {
+	// not standard, but most popular
+	host = r.Header.Get("X-Forwarded-Host")
+	if host != "" {
+		return
+	}
+
+	// if all else fails fall back to request host
+	host = r.Host
+	return
+}
+
 func responseJSON(w http.ResponseWriter, data interface{}) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)

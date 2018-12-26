@@ -1,15 +1,8 @@
-import News from './news/News'
-import Scoreboard from './scoreboard/Scoreboard'
-import Rules from './rules/Rules'
-import Challenges from './challenges/Challenges'
-import Challenge from './challenge/Challenge'
-import Auth from './auth/Auth'
+import Auth from './auth/Auth';
+import Challenge from './challenge/Challenge';
+import Challenges from './challenges/Challenges';
+import News from './news/News';
+import Rules from './rules/Rules';
+import Scoreboard from './scoreboard/Scoreboard';
 
-export {
-  Auth,
-  News,
-  Scoreboard,
-  Rules,
-  Challenges,
-  Challenge,
-}
+export { Auth, Challenge, Challenges, News, Rules, Scoreboard };

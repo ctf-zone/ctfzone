@@ -60,7 +60,7 @@ func Router(cfg *config.Config, db *models.Repository,
 	adminRouter := AdminRouter(cfg, db, sm)
 
 	r.Mount("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		host := strings.Split(r.Host, ":")[0]
+		host := strings.Split(requestHost(r), ":")[0]
 
 		switch host {
 
