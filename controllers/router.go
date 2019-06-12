@@ -65,7 +65,7 @@ func Router(cfg *config.Config, db *models.Repository,
 		switch host {
 
 		case cfg.Server.Domain:
-			fmt.Printf("HERE = %+v\n", host)
+			publicRouter.ServeHTTP(w, r)
 			return
 
 		case fmt.Sprintf("admin.%s", cfg.Server.Domain):
