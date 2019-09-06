@@ -2,12 +2,10 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Layout, Icon } from 'antd'
 
-// import logoBig from '~/images/logo-big.svg'
-// import logoSmall from '~/images/logo-small.svg'
-import logoSmall from '~/images/mctf.svg'
-import logoBig from '~/images/mctf.svg'
+import logoBig from '../../../../../images/logo-big.svg'
+import logoSmall from '../../../../../images/logo-small.svg'
 
-import './Sidebar.css'
+import styles from './Sidebar.module.css'
 
 class Sidebar extends Component {
 
@@ -39,14 +37,14 @@ class Sidebar extends Component {
 
     return (
       <Layout.Sider
-        styleName='sider'
+        className={styles.sider}
         collapsed={collapsed}
       >
         <Layout
-          styleName='layout'
+          className={styles.layout}
         >
           <Layout.Header style={{ padding: 0 }}>
-            <div styleName='logo'>
+            <div className={styles.logo}>
               <img alt='logo' src={logo} />
             </div>
           </Layout.Header>
@@ -55,7 +53,7 @@ class Sidebar extends Component {
           </Layout.Content>
           <Layout.Footer style={{ padding: 0 }}>
             <div
-              styleName='toggle'
+              className={styles.toggle}
               onClick={this.toggleSiderbar}
             >
               <Icon type={toggleIcon} />

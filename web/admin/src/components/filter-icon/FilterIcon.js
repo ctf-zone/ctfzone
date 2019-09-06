@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Icon } from 'antd'
 
-import './FilterIcon.css'
+import styles from './FilterIcon.module.css'
 
 class FilterIcon extends Component {
   static propTypes = {
@@ -17,7 +17,7 @@ class FilterIcon extends Component {
       <Icon
         type='filter'
         {...rest}
-        styleName={isFiltered ? 'active' : 'inactive'}
+        className={isFiltered ? styles.active : styles.inactive}
       />
     )
   }

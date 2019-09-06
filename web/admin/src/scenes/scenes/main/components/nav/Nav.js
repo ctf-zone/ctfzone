@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom'
 import { Menu, Icon } from 'antd'
 import { withRouter } from 'react-router'
 
-@withRouter
 class Nav extends Component {
 
   static propTypes = {
@@ -36,6 +35,7 @@ class Nav extends Component {
       <Menu
         selectedKeys={selectedKeys}
         theme='dark'
+        style={{'height': '100%'}}
       >
         { menuItems.map((item, i) => (
           <Menu.Item key={i}>
@@ -50,4 +50,4 @@ class Nav extends Component {
   }
 }
 
-export default Nav
+export default withRouter(Nav)

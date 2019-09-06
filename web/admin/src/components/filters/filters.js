@@ -1,8 +1,8 @@
 import React from 'react'
 import { Input, Radio, Select, DatePicker } from 'antd'
 
-import FilterIcon from '~/components/filter-icon/FilterIcon'
-import FilterDropdown from '~/components/filter-dropdown/FilterDropdown'
+import FilterIcon from '../filter-icon/FilterIcon'
+import FilterDropdown from '../filter-dropdown/FilterDropdown'
 
 /* eslint-disable react/display-name */
 

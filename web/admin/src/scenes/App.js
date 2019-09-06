@@ -1,13 +1,9 @@
 import React, { Component } from 'react'
 import { Switch, Route, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { hot } from 'react-hot-loader'
 
 import * as scenes from './scenes'
 
-@hot(module)
-@withRouter
-@connect()
 class App extends Component {
   render() {
     return (
@@ -19,4 +15,4 @@ class App extends Component {
   }
 }
 
-export default App
+export default withRouter(connect()(App))

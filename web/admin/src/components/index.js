@@ -1,6 +1,6 @@
 import FilterDropdown from './filter-dropdown/FilterDropdown'
 import FilterIcon  from './filter-icon/FilterIcon'
-import FlagIcon from './flag-icon/FlagIcon'
+// import FlagIcon from './flag-icon/FlagIcon'
 import Pagination from './pagination/Pagination'
 import withFilters from './filters/withFilters'
 import MarkdownEditor from './markdown-editor/MarkdownEditor'
@@ -14,7 +14,7 @@ import {
 export {
   FilterDropdown,
   FilterIcon,
-  FlagIcon,
+  // FlagIcon,
   Pagination,
   withFilters,
   textFilter,

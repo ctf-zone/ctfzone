@@ -1,4 +1,4 @@
-import { ApiError } from '~/utils/api'
+import { ApiError } from '../utils/api'
 
 const createReducer = initial => (state, { name, action, payload = {} }) => {
   const mixin = { ...initial, ...payload }

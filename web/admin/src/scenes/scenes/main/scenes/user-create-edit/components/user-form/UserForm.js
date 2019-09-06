@@ -2,14 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Icon, Switch, Button, Checkbox } from 'antd'
 
-import { hasErrors, mapPropsToFields } from '~/utils/form'
+import { hasErrors, mapPropsToFields } from '../../../../../../../utils/form'
 
-@Form.create({
-  onFieldsChange: (props, changedFields) => {
-    props.onChange(changedFields)
-  },
-  mapPropsToFields,
-})
 class UserForm extends Component {
 
   static propTypes = {
@@ -256,4 +250,8 @@ class UserForm extends Component {
   }
 }
 
-export default UserForm
+const onFieldsChange = (props, changedFields) => {
+  props.onChange(changedFields)
+}
+
+export default Form.create({ onFieldsChange, mapPropsToFields })(UserForm)

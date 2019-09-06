@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Button, Icon } from 'antd'
 
-import './Pagination.css'
+import styles from './Pagination.module.css'
 
 class Pagination extends Component {
 
@@ -15,7 +15,7 @@ class Pagination extends Component {
 
   render() {
     return (
-      <div styleName='pagination'>
+      <div className={styles.pagination}>
         <Button.Group>
           <Button
             type='primary'

@@ -9,18 +9,8 @@ import { Nav, Sidebar } from './components'
 import * as scenes from './scenes'
 
 import menuItems from './menu.json'
-import './Main.css'
+import styles from './Main.module.css'
 
-@withRouter
-@connect(
-  (state) => ({
-    isLoggedIn: state.api.models.auth.success,
-    isChecking: state.api.models.auth.loading,
-  }),
-  (dispatch) => ({
-    authCheck: dispatch.auth.check,
-  }),
-)
 class Main extends Component {
 
   static propTypes = {
@@ -92,18 +82,18 @@ class Main extends Component {
 
   renderAll() {
     return (
-      <Layout styleName='layout'>
+      <Layout className={styles.layout}>
 
         {this.renderSidebar()}
 
-        <Layout styleName='main'>
+        <Layout className={styles.main}>
 
           <Layout.Header>
             {this.renderHeader()}
           </Layout.Header>
 
-          <Layout.Content styleName='content'>
-            <div styleName='body'>
+          <Layout.Content className={styles.content}>
+            <div className={styles.body}>
               {this.renderContent()}
             </div>
           </Layout.Content>
@@ -121,7 +111,7 @@ class Main extends Component {
     const { isChecking } = this.props
 
     return (
-      <div styleName='spin'>
+      <div className={styles.spin}>
         <Spin spinning={isChecking} />
       </div>
     )
@@ -138,4 +128,13 @@ class Main extends Component {
   }
 }
 
-export default Main
+const mapStateToProps = state => ({
+  isLoggedIn: state.api.models.auth.success,
+  isChecking: state.api.models.auth.loading,
+});
+
+const mapDispatchToProps = dispatch => ({
+  authCheck: dispatch.auth.check,
+});
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Main))

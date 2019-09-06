@@ -9,22 +9,10 @@ import {
   Select,
 } from 'antd'
 
-import { MarkdownEditor } from '~/components'
-import { mapPropsToFields } from '~/utils/form'
+import { MarkdownEditor } from '../../../../../../../components'
+import { mapPropsToFields } from '../../../../../../../utils/form'
 
 
-@Form.create({
-  onFieldsChange: (props, changedFields) => {
-    props.onChange(changedFields)
-  },
-  mapPropsToFields,
-})
-@connect(
-  () => ({}),
-  (dispatch) => ({
-    filesUpload: dispatch.files.upload,
-  })
-)
 class AnnouncementForm extends Component {
 
   static propTypes = {
@@ -176,4 +164,15 @@ class AnnouncementForm extends Component {
   }
 }
 
-export default AnnouncementForm
+const onFieldsChange = (props, changedFields) => {
+  props.onChange(changedFields)
+};
+
+const mapStateToProps = () => ({});
+
+const mapDispatchToProps = dispatch => ({
+  filesUpload: dispatch.files.upload,
+});
+
+
+export default Form.create({ mapPropsToFields, onFieldsChange })(connect(mapStateToProps, mapDispatchToProps)(AnnouncementForm))

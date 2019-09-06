@@ -5,23 +5,10 @@ import { Row, Col } from 'antd'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
-import { addValues, addErrors } from '~/utils/form'
+import { addValues, addErrors } from '../../../../../utils/form'
 
 import { AnnouncementForm } from './components'
 
-@withRouter
-@connect(
-  (state) => ({
-    announcement: state.announcements.item,
-    challenges: state.challenges.challenges,
-  }),
-  (dispatch) => ({
-    announcementsCreate: dispatch.announcements.create,
-    announcementsUpdate: dispatch.announcements.update,
-    announcementsGet: dispatch.announcements.get,
-    challengesList: dispatch.challenges.list,
-  })
-)
 class ChallengeCreateEdit extends Component {
 
   static propTypes = {
@@ -138,4 +125,16 @@ class ChallengeCreateEdit extends Component {
   }
 }
 
-export default ChallengeCreateEdit
+const mapStateToProps = state => ({
+  announcement: state.announcements.item,
+  challenges: state.challenges.challenges,
+});
+
+const mapDispatchToProps = dispatch => ({
+  announcementsCreate: dispatch.announcements.create,
+  announcementsUpdate: dispatch.announcements.update,
+  announcementsGet: dispatch.announcements.get,
+  challengesList: dispatch.challenges.list,
+});
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ChallengeCreateEdit))

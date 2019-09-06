@@ -4,20 +4,9 @@ import { Row, Col } from 'antd'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
-import { addValues, addErrors } from '~/utils/form'
+import { addValues, addErrors } from '../../../../../utils/form'
 import { UserForm } from './components'
 
-@withRouter
-@connect(
-  state => ({
-    user: state.users.user,
-  }),
-  dispatch => ({
-    usersCreate: dispatch.users.create,
-    usersUpdate: dispatch.users.update,
-    usersGet: dispatch.users.get,
-  })
-)
 class UserCreateEdit extends Component {
 
   static propTypes = {
@@ -119,4 +108,15 @@ class UserCreateEdit extends Component {
   }
 }
 
-export default UserCreateEdit
+const mapStateToProps = state => ({
+  user: state.users.user,
+});
+
+const mapDispatchToProps = dispatch => ({
+  usersCreate: dispatch.users.create,
+  usersUpdate: dispatch.users.update,
+  usersGet: dispatch.users.get,
+});
+
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(UserCreateEdit))
