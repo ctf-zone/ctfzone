@@ -1,9 +1,9 @@
 package migrations
 
 import (
-	"github.com/mattes/migrate"
-	_ "github.com/mattes/migrate/database/postgres" // postgres driver for migrate
-	"github.com/mattes/migrate/source/go-bindata"
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	bindata "github.com/golang-migrate/migrate/v4/source/go_bindata"
 	"github.com/pkg/errors"
 )
 

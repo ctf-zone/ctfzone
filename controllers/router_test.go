@@ -19,7 +19,6 @@ import (
 	assetfs "github.com/elazarl/go-bindata-assetfs"
 	"github.com/gavv/httpexpect"
 	"github.com/go-testfixtures/testfixtures"
-	_ "github.com/mattes/migrate/database/postgres"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/require"
