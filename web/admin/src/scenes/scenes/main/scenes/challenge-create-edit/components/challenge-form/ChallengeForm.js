@@ -12,23 +12,11 @@ import {
   Button,
 } from 'antd'
 
-import { MarkdownEditor } from '~/components'
-import { mapPropsToFields, hasErrors } from '~/utils/form'
+import { MarkdownEditor } from '../../../../../../../components'
+import { mapPropsToFields, hasErrors } from '../../../../../../../utils/form'
 
-import './ChallengeForm.css'
+import styles from './ChallengeForm.module.css'
 
-@Form.create({
-  onFieldsChange: (props, changedFields, allFields) => {
-    props.onChange(allFields)
-  },
-  mapPropsToFields,
-})
-@connect(
-  () => ({}),
-  (dispatch) => ({
-    filesUpload: dispatch.files.upload,
-  })
-)
 class ChallengeForm extends Component {
 
   static propTypes = {
@@ -321,4 +309,15 @@ class ChallengeForm extends Component {
   }
 }
 
-export default ChallengeForm
+const mapStateToProps = state => ({});
+
+const mapDispatchToProps = dispatch => ({
+    filesUpload: dispatch.files.upload,
+});
+
+const onFieldsChange = (props, changedFields, allFields) => {
+  props.onChange(allFields)
+}
+
+
+export default Form.create({ onFieldsChange, mapPropsToFields })(connect(mapStateToProps, mapDispatchToProps)(ChallengeForm))

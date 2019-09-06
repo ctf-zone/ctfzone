@@ -17,23 +17,10 @@ import {
   Pagination,
   textFilter,
   withFilters,
-} from '~/components'
+} from '../../../../../components'
 
-import './AnnouncementsTable.css'
+import styles from './AnnouncementsTable.module.css'
 
-@withFilters
-@connect(
-  (state) => ({
-    announcements: state.announcements,
-    challenges: state.challenges.challenges,
-    effects: state.api.effects.announcements.list,
-  }),
-  (dispatch) => ({
-    challengesList: dispatch.challenges.list,
-    announcementsList: dispatch.announcements.list,
-    announcementsDelete: dispatch.announcements.delete,
-  }),
-)
 class AnnouncementsTable extends Component {
 
   static propTypes = {
@@ -93,14 +80,14 @@ class AnnouncementsTable extends Component {
     const isFiltered = !(_.isEmpty(restFilters) && _.isEmpty(extra))
 
     return (
-      <div styleName='controls'>
+      <div className={styles.controls}>
         <Row>
-          <Col span={12} styleName='controlsLeft'>
+          <Col span={12} className={styles.controlsLeft}>
             <Link to='/announcements/create'>
               <Button type='primary'>Create</Button>
             </Link>
           </Col>
-          <Col span={12} styleName='controlsRight'>
+          <Col span={12} className={styles.controlsRight}>
             <Button
               onClick={this.props.handleResetFilters}
               disabled={!isFiltered}
@@ -198,4 +185,17 @@ class AnnouncementsTable extends Component {
   }
 }
 
-export default AnnouncementsTable
+const mapStateToProps = state => ({
+    announcements: state.announcements,
+    challenges: state.challenges.challenges,
+    effects: state.api.effects.announcements.list,
+});
+
+const mapDispatchToProps = dispatch => ({
+    challengesList: dispatch.challenges.list,
+    announcementsList: dispatch.announcements.list,
+    announcementsDelete: dispatch.announcements.delete,
+});
+
+
+export default withFilters(connect(mapStateToProps, mapDispatchToProps)(AnnouncementsTable))

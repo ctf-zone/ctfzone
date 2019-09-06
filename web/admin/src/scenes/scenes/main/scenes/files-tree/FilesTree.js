@@ -3,15 +3,6 @@ import PropTypes from 'prop-types'
 import { Tree } from 'antd'
 import { connect } from 'react-redux'
 
-@connect(
-  state => ({
-    files: state.files,
-    filesListResult: state.api.effects.files.list,
-  }),
-  dispatch => ({
-    filesList: dispatch.files.list,
-  }),
-)
 class FilesTree extends Component {
 
   static propTypes = {
@@ -55,4 +46,14 @@ class FilesTree extends Component {
   }
 }
 
-export default FilesTree
+
+const mapStateToProps = state => ({
+    files: state.files,
+    filesListResult: state.api.effects.files.list,
+});
+
+const mapDispatchToProps = dispatch => ({
+    filesList: dispatch.files.list,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(FilesTree)

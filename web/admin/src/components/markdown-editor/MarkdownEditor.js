@@ -8,6 +8,7 @@ import ReactMarkdown from 'react-markdown'
 import 'codemirror/mode/gfm/gfm'
 
 import './MarkdownEditor.css'
+import styles from './MarkdownEditor.module.css'
 
 class MarkdownEditor extends Component {
 
@@ -21,7 +22,7 @@ class MarkdownEditor extends Component {
     return (
       <Tabs defaultActiveKey='1' animated={false}>
         <Tabs.TabPane tab='Edit' key='1'>
-          <div styleName='edit'>
+          <div className={styles.edit}>
             <CodeMirror
               value={value}
               options={{
@@ -33,7 +34,7 @@ class MarkdownEditor extends Component {
           </div>
         </Tabs.TabPane>
         <Tabs.TabPane tab='Preview' key='2'>
-          <div styleName='preview'>
+          <div className={styles.preview}>
             <ReactMarkdown source={this.props.value} />
           </div>
         </Tabs.TabPane>

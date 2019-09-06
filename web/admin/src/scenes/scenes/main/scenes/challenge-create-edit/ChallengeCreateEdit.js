@@ -5,23 +5,10 @@ import { Row, Col } from 'antd'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
-import { addValues, addErrors } from '~/utils/form'
+import { addValues, addErrors } from '../../../../../utils/form'
 
 import { ChallengeForm } from './components'
 
-@withRouter
-@connect(
-  (state) => ({
-    challenge: state.challenges.challenge,
-    game: state.game,
-  }),
-  (dispatch) => ({
-    challengesCreate: dispatch.challenges.create,
-    challengesUpdate: dispatch.challenges.update,
-    challengesGet: dispatch.challenges.get,
-    gameGet: dispatch.game.get,
-  })
-)
 class ChallengeCreateEdit extends Component {
 
   static propTypes = {
@@ -119,4 +106,17 @@ class ChallengeCreateEdit extends Component {
   }
 }
 
-export default ChallengeCreateEdit
+const mapStateToProps = state => ({
+  challenge: state.challenges.challenge,
+  game: state.game,
+});
+
+const mapDispatchToProps = dispatch => ({
+  challengesCreate: dispatch.challenges.create,
+  challengesUpdate: dispatch.challenges.update,
+  challengesGet: dispatch.challenges.get,
+  gameGet: dispatch.game.get,
+});
+
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ChallengeCreateEdit))

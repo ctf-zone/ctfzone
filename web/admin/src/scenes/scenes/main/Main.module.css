@@ -3,11 +3,13 @@
 
 .content {
   padding: 24px;
+  height: 100%;
 }
 
 .body {
   padding: 10px;
   background-color: #fff;
+  height: 100%;
 }
 
 .spin {
@@ -18,5 +20,5 @@
 }
 
 .main {
-  min-height: 100vh;
+  height: 100vh;
 }

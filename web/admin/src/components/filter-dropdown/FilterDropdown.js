@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-import './FilterDropdown.css'
+import styles from './FilterDropdown.module.css'
 
 class FilterDropdown extends Component {
 
@@ -13,13 +13,13 @@ class FilterDropdown extends Component {
 
   render() {
     return (
-      <div styleName='dropdown'>
-        <div styleName='container'>
+      <div className={styles.dropdown}>
+        <div className={styles.container}>
           {this.props.children}
         </div>
-        <div styleName='buttons'>
-          <a href='javascript:;' styleName='ok' onClick={this.props.onConfirm}>OK</a>
-          <a href='javascript:;' styleName='reset' onClick={this.props.onReset}>Reset</a>
+        <div className={styles.buttons}>
+          <a href='javascript:;' className={styles.ok} onClick={this.props.onConfirm}>OK</a>
+          <a href='javascript:;' className={styles.reset} onClick={this.props.onReset}>Reset</a>
         </div>
       </div>
     )

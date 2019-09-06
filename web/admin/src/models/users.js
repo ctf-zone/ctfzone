@@ -1,4 +1,4 @@
-import api from '~/utils/api'
+import api from '../utils/api'
 import parseLinkHeader from 'parse-link-header'
 import { stringify } from 'qs'
 

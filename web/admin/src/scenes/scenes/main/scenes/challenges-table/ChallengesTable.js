@@ -21,24 +21,10 @@ import {
   radioFilter,
   selectFilter,
   withFilters,
-} from '~/components'
+} from '../../../../../components'
 
-import './ChallengesTable.css'
+import styles from './ChallengesTable.module.css'
 
-@withFilters
-@connect(
-  state => ({
-    challenges: state.challenges,
-    game: state.game,
-    challengesListResult: state.api.effects.challenges.list,
-    challengesDeleteResult: state.api.effects.challenges.delete,
-  }),
-  dispatch => ({
-    challengesList: dispatch.challenges.list,
-    challengesDelete: dispatch.challenges.delete,
-    gameGet: dispatch.game.get,
-  }),
-)
 class ChallengesTable extends Component {
 
   static propTypes = {
@@ -99,14 +85,14 @@ class ChallengesTable extends Component {
     const isFiltered = !(_.isEmpty(restFilters) && _.isEmpty(extra))
 
     return (
-      <div styleName='controls'>
+      <div className={styles.controls}>
         <Row>
-          <Col span={12} styleName='controlsLeft'>
+          <Col span={12} className={styles.controlsLeft}>
             <Link to='/challenges/create'>
               <Button type='primary'>Create</Button>
             </Link>
           </Col>
-          <Col span={12} styleName='controlsRight'>
+          <Col span={12} className={styles.controlsRight}>
             <Button
               onClick={this.props.handleResetFilters}
               disabled={!isFiltered}
@@ -233,4 +219,18 @@ class ChallengesTable extends Component {
   }
 }
 
-export default ChallengesTable
+const mapStateToProps = state => ({
+  challenges: state.challenges,
+  game: state.game,
+  challengesListResult: state.api.effects.challenges.list,
+  challengesDeleteResult: state.api.effects.challenges.delete,
+});
+
+const mapDispatchToProps = dispatch => ({
+  challengesList: dispatch.challenges.list,
+  challengesDelete: dispatch.challenges.delete,
+  gameGet: dispatch.game.get,
+});
+
+
+export default withFilters(connect(mapStateToProps, mapDispatchToProps)(ChallengesTable))

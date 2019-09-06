@@ -26,23 +26,10 @@ import {
   radioFilter,
   // selectFilter,
   dateRangeFilter,
-} from '~/components'
+} from '../../../../../components'
 
-import './UsersTable.css'
+import styles from './UsersTable.module.css'
 
-@withFilters
-@connect(
-  (state) => ({
-    users: state.users,
-    usersListResult: state.api.effects.users.list,
-    usersDeleteResult: state.api.effects.users.delete,
-  }),
-  (dispatch) => ({
-    usersList: dispatch.users.list,
-    usersDelete: dispatch.users.delete,
-    usersCreate: dispatch.users.create,
-  }),
-)
 class UsersTable extends Component {
 
   static propTypes = {
@@ -104,9 +91,9 @@ class UsersTable extends Component {
     const isFiltered = !(_.isEmpty(restFilters) && _.isEmpty(extra))
 
     return (
-      <div styleName='controls'>
+      <div className={styles.controls}>
         <Row>
-          <Col span={12} styleName='controlsLeft'>
+          <Col span={12} className={styles.controlsLeft}>
             <Link to='/users/create'>
               <Button type='primary'>Create</Button>
             </Link>
@@ -139,7 +126,7 @@ class UsersTable extends Component {
               </Button>
             </Upload>
           </Col>
-          <Col span={12} styleName='controlsRight'>
+          <Col span={12} className={styles.controlsRight}>
             <Button
               onClick={this.props.handleResetFilters}
               disabled={!isFiltered}
@@ -178,7 +165,7 @@ class UsersTable extends Component {
       //     <FlagIcon
       //       size='lg'
       //       code={data.country}
-      //       styleName='flag'
+      //       className={styles.flag}
       //     />
       //   ),
       //   ...selectFilter(
@@ -273,4 +260,18 @@ class UsersTable extends Component {
   }
 }
 
-export default UsersTable
+
+const mapStateToProps = state => ({
+    users: state.users,
+    usersListResult: state.api.effects.users.list,
+    usersDeleteResult: state.api.effects.users.delete,
+});
+
+const mapDispatchToProps = dispatch => ({
+    usersList: dispatch.users.list,
+    usersDelete: dispatch.users.delete,
+    usersCreate: dispatch.users.create,
+});
+
+
+export default withFilters(connect(mapStateToProps, mapDispatchToProps)(UsersTable))

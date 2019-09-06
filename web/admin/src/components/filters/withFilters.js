@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import * as _ from 'lodash'
 
-import { set, unset } from '~/utils/object'
+import { set, unset } from '../../utils/object'
 
 export default WrappedComponent => {
   return class WithFilters extends Component {

@@ -5,36 +5,12 @@ import { withRouter } from 'react-router-dom'
 
 import { Form, Input, Icon, Button } from 'antd'
 
-// import logo from '~/images/logo-big.svg'
-import logo from '~/images/mctf.svg'
+import logo from '../../../../../images/logo-big.svg'
 
-import { hasErrors } from '~/utils/form'
+import { hasErrors } from '../../../../../utils/form'
 
-import './LoginForm.css'
+import styles from './LoginForm.module.css'
 
-@withRouter
-@connect(
-  state => ({
-    ...state.api.effects.auth.login,
-  }),
-  dispatch => ({
-    authLogin: dispatch.auth.login,
-  }),
-)
-@Form.create({
-  mapPropsToFields: props => {
-    const { error } = props
-
-    if (error && error.response && error.response.status == 401) {
-      return {
-        password: Form.createFormField({
-          value: '',
-          errors: [new Error('Invalid password')],
-        }),
-      }
-    }
-  },
-})
 class LoginForm extends Component {
 
   static propTypes = {
@@ -107,7 +83,7 @@ class LoginForm extends Component {
     return (
       <Form.Item>
         <Button
-          styleName='submit'
+          className={styles.submit}
           type='primary'
           htmlType='submit'
           loading={loading}
@@ -123,7 +99,7 @@ class LoginForm extends Component {
     return (
       <div>
 
-        <div styleName='logo'>
+        <div className={styles.logo}>
           <img alt='logo' src={logo} />
         </div>
 
@@ -137,4 +113,25 @@ class LoginForm extends Component {
   }
 }
 
-export default LoginForm
+const mapStateToProps = state => ({
+  ...state.api.effects.auth.login,
+});
+
+const mapDispatchToProps = dispatch => ({
+  authLogin: dispatch.auth.login,
+});
+
+const mapPropsToFields = ({ error }) => {
+  if (error && error.response && error.response.status == 401) {
+    return {
+      password: Form.createFormField({
+        value: '',
+        errors: [new Error('Invalid password')],
+      }),
+    }
+  }
+};
+
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(Form.create({ mapPropsToFields })(LoginForm))
+);
