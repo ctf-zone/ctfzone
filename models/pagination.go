@@ -1,8 +1,8 @@
 package models
 
 import (
-	udb "upper.io/db.v3"
-	"upper.io/db.v3/lib/sqlbuilder"
+	"fmt"
+	"strings"
 )
 
 type Pagination struct {
@@ -11,7 +11,7 @@ type Pagination struct {
 	Before int64 `schema:"before"`
 }
 
-var defaultPagination = Pagination{Count: 30}
+var defaultPagination = Pagination{Count: 2}
 
 func (p *Pagination) IsZero() bool {
 	return p.Count == 0 && p.After == 0 && p.Before == 0
@@ -36,39 +36,63 @@ type pageable interface {
 	Len() int
 }
 
-func paginate(query sqlbuilder.Paginator, p Pagination) sqlbuilder.Paginator {
+func paginate(query string, params map[string]interface{}, p Pagination) (string, map[string]interface{}) {
 
 	if p.After != 0 {
-		query = query.NextPage(p.After)
+		query, params = nextPage(query, params, p.After)
 	} else if p.Before != 0 {
-		query = query.PrevPage(p.Before)
+		query, params = prevPage(query, params, p.Before)
 	}
 
-	return query
+	query += " ORDER BY id DESC"
+
+	if p.Count != 0 {
+		query += " LIMIT :count"
+		params["count"] = p.Count
+	}
+
+	return query, params
 }
 
-func (r *Repository) count(query sqlbuilder.Getter) (int, error) {
-	var count int
+func condPrefix(query string) string {
+	var prefix string
+	if strings.Contains(query, "WHERE") {
+		prefix = " AND"
+	} else {
+		prefix = " WHERE"
+	}
+	return prefix
+}
 
-	row, err := r.db.
-		SelectFrom(udb.Raw("?", query)).
-		As("page").
-		Columns(udb.Raw("COUNT(*)")).
-		QueryRow()
+func nextPage(query string, params map[string]interface{}, after int64) (string, map[string]interface{}) {
+	query += condPrefix(query) + " id < :after"
+	params["after"] = after
+	return query, params
+}
 
+func prevPage(query string, params map[string]interface{}, before int64) (string, map[string]interface{}) {
+	query = fmt.Sprintf("SELECT * FROM (%s%s id > :before ORDER BY id ASC) AS p", query, condPrefix(query))
+	params["before"] = before
+	return query, params
+}
+
+func (r *Repository) count(query string, params map[string]interface{}) (int, error) {
+
+	stmt, err := r.db.PrepareNamed(fmt.Sprintf("SELECT COUNT(*) FROM (%s) AS c", query))
 	if err != nil {
 		return 0, err
 	}
 
-	if err := row.Scan(&count); err != nil {
+	var count int
+
+	if err := stmt.QueryRow(params).Scan(&count); err != nil {
 		return 0, err
 	}
 
 	return count, nil
 }
 
-func (r *Repository) pagesInfo(query sqlbuilder.Paginator, p Pagination, models pageable) (*PagesInfo, error) {
-
+func (r *Repository) pagesInfo(query string, params map[string]interface{}, p Pagination, models pageable) (*PagesInfo, error) {
 	pi := &PagesInfo{}
 
 	var first, last int64
@@ -81,14 +105,14 @@ func (r *Repository) pagesInfo(query sqlbuilder.Paginator, p Pagination, models 
 		first, last = p.Before, p.Before
 	}
 
-	if count, err := r.count(query.NextPage(last)); err != nil {
+	if count, err := r.count(nextPage(query, params, last)); err != nil {
 		return nil, err
 	} else if count > 0 {
 		pi.Next.After = last
 		pi.Next.Count = p.Count
 	}
 
-	if count, err := r.count(query.PrevPage(first)); err != nil {
+	if count, err := r.count(prevPage(query, params, first)); err != nil {
 		return nil, err
 	} else if count > 0 {
 		pi.Prev.Before = first

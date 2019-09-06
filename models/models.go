@@ -1,33 +1,20 @@
 package models
 
 import (
-	"upper.io/db.v3/lib/sqlbuilder"
-	"upper.io/db.v3/postgresql"
+	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 )
 
 type Repository struct {
-	db sqlbuilder.Database
+	db *sqlx.DB
 }
 
 func New(dsn string) (*Repository, error) {
 
-	conn, err := postgresql.ParseURL(dsn)
+	db, err := sqlx.Connect("postgres", dsn)
 	if err != nil {
 		return nil, err
 	}
-
-	db, err := postgresql.Open(conn)
-	if err != nil {
-		return nil, err
-	}
-
-	return NewWithDB(db)
-}
-
-func NewWithDB(db sqlbuilder.Database) (*Repository, error) {
-	db.SetPreparedStatementCache(true)
-
-	// TODO: set logger to logrus
 
 	return &Repository{db}, nil
 }
@@ -37,5 +24,5 @@ func (r *Repository) Close() error {
 }
 
 func (r *Repository) EnableLogging() {
-	r.db.SetLogging(true)
+	// TODO
 }

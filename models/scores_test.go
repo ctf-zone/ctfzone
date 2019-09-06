@@ -7,7 +7,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	udb "upper.io/db.v3"
 
 	"github.com/ctf-zone/ctfzone/config"
 	. "github.com/ctf-zone/ctfzone/models"
@@ -45,21 +44,11 @@ func Test_Scores_List_ClassicScoring(t *testing.T) {
 
 	scoresExpected := make([]*Score, 0)
 
-	assert.NoError(t,
-		upperDB.
-			SelectFrom("users").
-			Columns("id", "name", "extra").
-			All(&scoresExpected),
-	)
+	assert.NoError(t, dbx.Select(&scoresExpected, "SELECT id, name, extra FROM users"))
 
 	for _, s := range scoresExpected {
 
-		rows, err := upperDB.
-			SelectFrom("solutions").
-			Columns("points").
-			Join("challenges").On("challenges.id = challenge_id").
-			Where("user_id", s.ID).
-			Query()
+		rows, err := dbx.Query("SELECT points FROM solutions JOIN challenges ON challenges.id = challenge_id WHERE user_id = $1", s.ID)
 		require.NoError(t, err)
 
 		defer rows.Close()
@@ -71,11 +60,7 @@ func Test_Scores_List_ClassicScoring(t *testing.T) {
 		}
 		require.NoError(t, rows.Err())
 
-		row, err := upperDB.
-			SelectFrom("solutions").
-			Columns(udb.Raw("MAX(created_at) AS updated_at")).
-			Where("user_id", s.ID).
-			QueryRow()
+		row := dbx.QueryRow("SELECT MAX(created_at) AS updated_at FROM solutions WHERE user_id = $1", s.ID)
 
 		require.NoError(t, err)
 		require.NoError(t, row.Scan(&s.UpdatedAt))
@@ -117,48 +102,30 @@ func Test_Scores_List_DynamicScoring(t *testing.T) {
 
 	scoresExpected := make([]*Score, 0)
 
-	assert.NoError(t,
-		upperDB.
-			SelectFrom("users").
-			Columns("id", "name", "extra").
-			All(&scoresExpected),
-	)
+	assert.NoError(t, dbx.Select(&scoresExpected, "SELECT id, name, extra FROM users"))
 
 	for _, s := range scoresExpected {
 
-		solvedChallengesRows, err := upperDB.
-			SelectFrom("solutions").
-			Columns("challenge_id").
-			Where("user_id", s.ID).
-			Query()
+		rows, err := dbx.Query("SELECT challenge_id FROM solutions WHERE user_id = $1", s.ID)
 		require.NoError(t, err)
 
-		defer solvedChallengesRows.Close()
+		defer rows.Close()
 
-		for solvedChallengesRows.Next() {
+		for rows.Next() {
 			var challengeID int
-			require.NoError(t, solvedChallengesRows.Scan(&challengeID))
+			require.NoError(t, rows.Scan(&challengeID))
 
 			var n int
-			countRow, err := upperDB.
-				SelectFrom("solutions").
-				Columns(udb.Raw("COUNT(*)")).
-				Where("challenge_id", challengeID).
-				QueryRow()
-			require.NoError(t, err)
-			require.NoError(t, countRow.Scan(&n))
+
+			row := dbx.QueryRow("SELECT COUNT(*) FROM solutions WHERE challenge_id = $1", challengeID)
+			require.NoError(t, row.Scan(&n))
 
 			s.Score += int(float64(min) + float64(max-min)*math.Pow(coeff, float64(n-1)))
 		}
-		require.NoError(t, solvedChallengesRows.Err())
+		require.NoError(t, rows.Err())
 
-		updatedAtRow, err := upperDB.
-			SelectFrom("solutions").
-			Columns(udb.Raw("MAX(created_at)")).
-			Where("user_id", s.ID).
-			QueryRow()
-
-		require.NoError(t, updatedAtRow.Scan(&s.UpdatedAt))
+		row := dbx.QueryRow("SELECT MAX(created_at) FROM solutions WHERE user_id = $1", s.ID)
+		require.NoError(t, row.Scan(&s.UpdatedAt))
 	}
 
 	sort.Sort(sort.Reverse(ScoresList(scoresExpected)))

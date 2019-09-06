@@ -1,14 +1,11 @@
 package models
 
 import (
-	"database/sql"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/lib/pq"
-	udb "upper.io/db.v3"
-	"upper.io/db.v3/lib/sqlbuilder"
-	"upper.io/db.v3/postgresql"
 
 	"github.com/ctf-zone/ctfzone/config"
 	"github.com/ctf-zone/ctfzone/internal/crypto"
@@ -23,17 +20,17 @@ const (
 )
 
 type Challenge struct {
-	ID          int64                  `db:"id,omitempty"         json:"id"`
-	Title       string                 `db:"title"                json:"title"`
-	Categories  postgresql.StringArray `db:"categories,omitempty" json:"categories"`
-	Points      int                    `db:"points"               json:"points"`
-	Description string                 `db:"description"          json:"description"`
-	Difficulty  Difficulty             `db:"difficulty"           json:"difficulty"`
-	Flag        string                 `db:"-"                    json:"flag,omitempty"`
-	FlagHash    string                 `db:"flag_hash"            json:"-"`
-	IsLocked    bool                   `db:"is_locked"            json:"isLocked"`
-	CreatedAt   time.Time              `db:"created_at"           json:"createdAt"`
-	UpdatedAt   time.Time              `db:"updated_at"           json:"updatedAt"`
+	ID          int64          `db:"id,omitempty"         json:"id"`
+	Title       string         `db:"title"                json:"title"`
+	Categories  pq.StringArray `db:"categories,omitempty" json:"categories"`
+	Points      int            `db:"points"               json:"points"`
+	Description string         `db:"description"          json:"description"`
+	Difficulty  Difficulty     `db:"difficulty"           json:"difficulty"`
+	Flag        string         `db:"-"                    json:"flag,omitempty"`
+	FlagHash    string         `db:"flag_hash"            json:"-"`
+	IsLocked    bool           `db:"is_locked"            json:"isLocked"`
+	CreatedAt   time.Time      `db:"created_at"           json:"createdAt"`
+	UpdatedAt   time.Time      `db:"updated_at"           json:"updatedAt"`
 }
 
 type ChallengeMeta struct {
@@ -48,9 +45,9 @@ type ChallengeUser struct {
 }
 
 type ChallengeE struct {
-	Challenge Challenge      `json:"challenge"`
-	Meta      *ChallengeMeta `json:"meta,omitempty"`
-	User      *ChallengeUser `json:"user,omitempty"`
+	Challenge      `json:"challenge"`
+	*ChallengeMeta `json:"meta,omitempty"`
+	*ChallengeUser `json:"user,omitempty"`
 }
 
 type ChallengesE []ChallengeE
@@ -124,233 +121,209 @@ func ChallengesFilter(f ChallengesFilters) challengesOption {
 }
 
 func (r *Repository) ChallengesInsert(o *Challenge) error {
-
 	o.CreatedAt = now()
 	o.UpdatedAt = o.CreatedAt
 	o.FlagHash = crypto.HashFlag(o.Flag)
 	o.Flag = ""
 
-	row, err := r.db.
-		InsertInto("challenges").
-		Values(o).
-		Returning("id").
-		QueryRow()
+	stmt, err := r.db.PrepareNamed(
+		"INSERT INTO challenges (title, categories, points, description, difficulty, flag_hash, is_locked, created_at, updated_at) " +
+			"VALUES(:title, :categories, :points, :description, :difficulty, :flag_hash, :is_locked, :created_at, :updated_at) " +
+			"RETURNING id")
 
 	if err != nil {
 		return err
 	}
 
-	return row.Scan(&o.ID)
+	return stmt.QueryRowx(o).Scan(&o.ID)
 }
 
 func (r *Repository) ChallengesUpdate(o *Challenge) error {
 	o.UpdatedAt = now()
 
-	query := r.db.
-		Update("challenges").
-		Set(map[string]interface{}{
-			"title":       o.Title,
-			"categories":  o.Categories,
-			"points":      o.Points,
-			"description": o.Description,
-			"difficulty":  o.Difficulty,
-			"is_locked":   o.IsLocked,
-			"updated_at":  o.UpdatedAt,
-		}).
-		Where("id", o.ID)
+	query := "UPDATE challenges SET " +
+		"title = :title, " +
+		"categories = :categories, " +
+		"points = :points, " +
+		"description = :description, " +
+		"difficulty = :difficulty, " +
+		"is_locked = :is_locked, " +
+		"updated_at = :updated_at"
 
 	if o.Flag != "" {
 		o.FlagHash = crypto.HashFlag(o.Flag)
 		o.Flag = ""
-		query = query.Set("flag_hash", o.FlagHash)
+		query += ", flag_hash = :flag_hash "
 	}
 
-	res, err := query.Exec()
+	query += " WHERE id = :id RETURNING updated_at"
 
+	stmt, err := r.db.PrepareNamed(query)
 	if err != nil {
 		return err
 	}
 
-	if n, err := res.RowsAffected(); err != nil {
-		return err
-	} else if n != 1 {
-		return sql.ErrNoRows
-	}
-
-	return nil
+	return stmt.QueryRowx(o).Scan(&o.UpdatedAt)
 }
 
 func (r *Repository) ChallengesDelete(id int64) error {
-	res, err := r.db.
-		DeleteFrom("challenges").
-		Where("id", id).
-		Exec()
-
-	if err != nil {
-		return err
-	}
-
-	if n, err := res.RowsAffected(); err != nil {
-		return err
-	} else if n != 1 {
-		return sql.ErrNoRows
-	}
-
-	return nil
+	return r.db.QueryRow("DELETE FROM challenges WHERE id = $1 RETURNING id", id).Scan(&id)
 }
 
-func (r *Repository) challengesQuery(cfg *config.Scoring, params challengesListOptions) sqlbuilder.Selector {
-	query := r.db.
-		SelectFrom("challenges").
-		Columns(
-			"challenges.id",
-			"challenges.title",
-			"challenges.categories",
-			"challenges.description",
-			"challenges.difficulty",
-			"challenges.is_locked",
-			"challenges.created_at",
-			"challenges.updated_at",
-		).
-		LeftJoin("challenges_solutions").On("challenges_solutions.challenge_id = challenges.id").
-		LeftJoin("challenges_likes").On("challenges_likes.challenge_id = challenges.id").
-		LeftJoin("challenges_hints").On("challenges_hints.challenge_id = challenges.id")
+func challengesQuery(cfg *config.Scoring, options challengesListOptions) (string, map[string]interface{}) {
+	params := make(map[string]interface{})
 
-	// Exclude locked by default to prevent
-	// showing them accidently to users.
-	if !params.IncludeLocked {
-		query = query.Where("is_locked", false)
-	}
+	query := "SELECT " +
+		"challenges.id, " +
+		"challenges.title, " +
+		"challenges.categories, " +
+		"challenges.description, " +
+		"challenges.difficulty, " +
+		"challenges.is_locked, " +
+		"challenges.created_at, " +
+		"challenges.updated_at, "
 
-	if params.IncludeMeta {
-		query = query.
-			Columns(
-				udb.Raw("COALESCE(challenges_solutions.count, 0) AS solutions_count"),
-				udb.Raw("COALESCE(challenges_likes.count, 0) AS likes_count"),
-				udb.Raw("COALESCE(challenges_hints.count, 0) AS hints_count"),
-			)
-	}
-
-	if params.UserID != 0 {
-		query = query.
-			Columns(
-				udb.Raw("COALESCE(? = ANY (challenges_solutions.users), FALSE) AS is_solved", params.UserID),
-				udb.Raw("COALESCE(? = ANY (challenges_likes.users), FALSE) AS is_liked", params.UserID),
-			)
-	}
-
+	// Scoring
 	switch cfg.Type {
-
 	default:
 		fallthrough
 
 	case "classic":
-		query = query.Columns("challenges.points")
+		query += "challenges.points"
 
 	case "dynamic":
 		p := cfg.Dynamic
 
+		// TODO: cfg.Dynamic method
 		// Calculate sum of solved challenges points.
 		// points = min + (max - min) * coeff ^ (n - 1)
 		formula := fmt.Sprintf(
-			"FLOOR(%d + %d * POWER(%.2f, %s - 1))",
+			"FLOOR(%d + %d * POWER(%.3f, %s - 1))",
 			p.Min,
 			p.Max-p.Min,
 			p.Coeff,
 			"challenges_solutions.count",
 		)
 
-		query = query.Columns(
-			udb.Raw(fmt.Sprintf("COALESCE(%s, %d) AS points", formula, p.Max)),
-		)
+		query += fmt.Sprintf("COALESCE(%s, %d) AS points", formula, p.Max)
 	}
 
-	return query
+	if options.IncludeMeta {
+		query += ", " +
+			"COALESCE(challenges_solutions.count, 0) AS solutions_count, " +
+			"COALESCE(challenges_likes.count, 0) AS likes_count, " +
+			"COALESCE(challenges_hints.count, 0) AS hints_count"
+	}
+
+	if options.UserID != 0 {
+		query += ", " +
+			"COALESCE(:user_id = ANY (challenges_solutions.users), FALSE) AS is_solved, " +
+			"COALESCE(:user_id = ANY (challenges_likes.users), FALSE) AS is_liked"
+		params["user_id"] = options.UserID
+	}
+
+	query += " FROM challenges " +
+		"LEFT JOIN challenges_solutions ON challenges_solutions.challenge_id = challenges.id " +
+		"LEFT JOIN challenges_likes ON challenges_likes.challenge_id = challenges.id " +
+		"LEFT JOIN challenges_hints ON challenges_hints.challenge_id = challenges.id "
+
+	// Exclude locked by default to prevent
+	// showing them accidently to users.
+	if !options.IncludeLocked {
+		query += "WHERE is_locked = :is_locked"
+		params["is_locked"] = false
+	}
+
+	return query, params
 }
 
 func (r *Repository) ChallengesOneByID(id int64) (*Challenge, error) {
 	var o Challenge
 
-	err := r.db.
-		SelectFrom("challenges").
-		Where("id", id).
-		Limit(1).
-		One(&o)
+	err := r.db.Get(&o, "SELECT * FROM challenges WHERE id = $1", id)
 
 	if err != nil {
-		return nil, handleErr(err)
+		return nil, err
 	}
 
 	return &o, nil
 }
 
-func challengesApplyFilters(query sqlbuilder.Selector, f ChallengesFilters) sqlbuilder.Selector {
+func challengesApplyFilters(query string, params map[string]interface{}, f ChallengesFilters) (string, map[string]interface{}) {
+	cond := make([]string, 0)
+
 	if f.Title != "" {
-		query = query.Where(
-			udb.Cond{
-				"title ILIKE": fmt.Sprintf("%%%s%%", f.Title),
-			},
-		)
+		cond = append(cond, "title ILIKE :title")
+		params["title"] = fmt.Sprintf("%%%s%%", f.Title)
 	}
 
 	if len(f.Categories) > 0 {
-		query = query.Where(
-			udb.Cond{
-				"categories &&": pq.StringArray(f.Categories),
-			},
-		)
+		cond = append(cond, "categories && :categories")
+		params["categories"] = pq.StringArray(f.Categories)
 	}
 
 	if f.IsLocked != nil {
-		query = query.Where("is_locked", *f.IsLocked)
+		// Could be added before by "IncludeLocked" option.
+		if !strings.Contains(query, "is_locked = :is_locked") {
+			cond = append(cond, "is_locked = :is_locked")
+		}
+		params["is_locked"] = *f.IsLocked
 	}
 
-	return query
+	if len(cond) > 0 {
+		query += condPrefix(query) + strings.Join(cond, " AND ")
+	}
+
+	return query, params
 }
 
-func (r *Repository) ChallengesOneByIDE(cfg *config.Scoring, id int64, options ...challengesOption) (*ChallengeE, error) {
+func (r *Repository) ChallengesOneByIDE(cfg *config.Scoring, id int64, opts ...challengesOption) (*ChallengeE, error) {
 	var o ChallengeE
 
-	var params challengesListOptions
-	for _, opt := range options {
-		opt(&params)
+	var options challengesListOptions
+	for _, opt := range opts {
+		opt(&options)
 	}
 
-	err := r.db.
-		SelectFrom(r.challengesQuery(cfg, params)).
-		As("challenges_e").
-		Where("id", id).
-		Limit(1).
-		One(&o)
+	query, params := challengesQuery(cfg, options)
+	query = fmt.Sprintf("SELECT * FROM (%s) AS c WHERE id = :id", query)
+	params["id"] = id
 
+	stmt, err := r.db.PrepareNamed(query)
 	if err != nil {
-		return nil, handleErr(err)
+		return nil, err
+	}
+
+	if err := stmt.Get(&o, params); err != nil {
+		return nil, err
 	}
 
 	return &o, nil
 }
 
-func (r *Repository) ChallengesListE(cfg *config.Scoring, options ...challengesOption) ([]ChallengeE, *PagesInfo, error) {
+func (r *Repository) ChallengesListE(cfg *config.Scoring, opts ...challengesOption) ([]ChallengeE, *PagesInfo, error) {
 	list := make(ChallengesE, 0)
 
-	var params challengesListOptions
+	var options challengesListOptions
 
-	for _, opt := range options {
-		opt(&params)
+	for _, opt := range opts {
+		opt(&options)
 	}
 
-	query := challengesApplyFilters(
-		r.db.SelectFrom(r.challengesQuery(cfg, params)).As("challenges_e"),
-		params.ChallengesFilters,
-	).
-		Paginate(params.Pagination.Count).
-		Cursor("-id")
+	query, params := challengesQuery(cfg, options)
+	query, params = challengesApplyFilters(query, params, options.ChallengesFilters)
+	pageQuery, params := paginate(query, params, options.Pagination)
 
-	if err := paginate(query, params.Pagination).All(&list); err != nil {
+	stmt, err := r.db.PrepareNamed(pageQuery)
+	if err != nil {
 		return nil, nil, err
 	}
 
-	pi, err := r.pagesInfo(query, params.Pagination, list)
+	if err := stmt.Select(&list, params); err != nil {
+		return nil, nil, err
+	}
+
+	pi, err := r.pagesInfo(query, params, options.Pagination, list)
 
 	if err != nil {
 		return nil, nil, err

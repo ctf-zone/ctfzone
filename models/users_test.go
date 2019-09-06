@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/bcrypt"
 
 	. "github.com/ctf-zone/ctfzone/models"
@@ -75,8 +76,6 @@ func Test_Users_Update_Success(t *testing.T) {
 	assert.True(t, o2.UpdatedAt.After(updatedAt))
 	assert.WithinDuration(t, time.Now(), o2.UpdatedAt, 5*time.Second)
 
-	// fix time
-	o2.UpdatedAt = o2.UpdatedAt.UTC()
 	assert.Equal(t, o1, o2)
 }
 
@@ -218,9 +217,9 @@ func Test_Users_List_FirstPage(t *testing.T) {
 	users, _, err := db.UsersList(
 		UsersPagination(Pagination{Count: 3}),
 	)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
-	assert.Len(t, users, 3)
+	require.Len(t, users, 3)
 	assert.Equal(t, int64(5), users[0].ID)
 	assert.Equal(t, int64(3), users[2].ID)
 
@@ -238,9 +237,9 @@ func Test_Users_List_NextPage(t *testing.T) {
 			After: 3,
 		}),
 	)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
-	assert.Len(t, users, 2)
+	require.Len(t, users, 2)
 	assert.Equal(t, int64(2), users[0].ID)
 	assert.Equal(t, int64(1), users[1].ID)
 
@@ -258,9 +257,9 @@ func Test_Users_List_PrevPage(t *testing.T) {
 			Before: 3,
 		}),
 	)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
-	assert.Len(t, users, 2)
+	require.Len(t, users, 2)
 	assert.Equal(t, int64(5), users[0].ID)
 	assert.Equal(t, int64(4), users[1].ID)
 

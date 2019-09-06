@@ -45,7 +45,6 @@ func Test_Announcements_Update_Success(t *testing.T) {
 	assert.True(t, o2.UpdatedAt.After(updatedAt))
 	assert.WithinDuration(t, time.Now(), o2.UpdatedAt, 5*time.Second)
 
-	o2.UpdatedAt = o2.UpdatedAt.UTC()
 	assert.Equal(t, o1, o2)
 }
 

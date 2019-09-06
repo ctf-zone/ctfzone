@@ -1,34 +1,50 @@
 package models
 
 import (
-	"database/sql"
+	"database/sql/driver"
+	"encoding/json"
+	"errors"
 	"fmt"
+	"strings"
 	"time"
-
-	udb "upper.io/db.v3"
-	"upper.io/db.v3/lib/sqlbuilder"
 
 	"github.com/ctf-zone/ctfzone/internal/crypto"
 )
 
 // User represents user profile.
 type User struct {
-	ID           int64                  `db:"id,omitempty"       json:"id"`
-	Name         string                 `db:"name"               json:"name"`
-	Email        string                 `db:"email"              json:"email"`
-	Password     string                 `db:"-"                  json:"password,omitempty"`
-	PasswordHash string                 `db:"password_hash"      json:"-"`
-	Extra        map[string]interface{} `db:"extra"              json:"extra"`
-	IsActivated  bool                   `db:"is_activated"       json:"isActivated"`
-	CreatedAt    time.Time              `db:"created_at"         json:"createdAt"`
-	UpdatedAt    time.Time              `db:"updated_at"         json:"updatedAt"`
+	ID           int64     `db:"id,omitempty"       json:"id"`
+	Name         string    `db:"name"               json:"name"`
+	Email        string    `db:"email"              json:"email"`
+	Password     string    `db:"-"                  json:"password,omitempty"`
+	PasswordHash string    `db:"password_hash"      json:"-"`
+	Extra        Extra     `db:"extra"              json:"extra"`
+	IsActivated  bool      `db:"is_activated"       json:"isActivated"`
+	CreatedAt    time.Time `db:"created_at"         json:"createdAt"`
+	UpdatedAt    time.Time `db:"updated_at"         json:"updatedAt"`
+}
+
+// TODO: change to struct when done
+type Extra map[string]interface{}
+
+func (a Extra) Value() (driver.Value, error) {
+	return json.Marshal(a)
+}
+
+func (a *Extra) Scan(value interface{}) error {
+	b, ok := value.([]byte)
+	if !ok {
+		return errors.New("type assertion to []byte failed")
+	}
+
+	return json.Unmarshal(b, &a)
 }
 
 // UserP represents public user profile.
 type UserP struct {
-	ID    int64                  `db:"id"    json:"id"`
-	Name  string                 `db:"name"  json:"name"`
-	Extra map[string]interface{} `db:"extra" json:"extra"`
+	ID    int64  `db:"id"    json:"id"`
+	Name  string `db:"name"  json:"name"`
+	Extra Extra  `db:"extra" json:"extra"`
 }
 
 type Users []User
@@ -114,17 +130,16 @@ func (r *Repository) UsersInsert(o *User) error {
 	o.CreatedAt = now()
 	o.UpdatedAt = o.CreatedAt
 
-	row, err := r.db.
-		InsertInto("users").
-		Values(o).
-		Returning("id").
-		QueryRow()
+	stmt, err := r.db.PrepareNamed(
+		"INSERT INTO users (name, email, password_hash, extra, is_activated, created_at, updated_at) " +
+			"VALUES(:name, :email, :password_hash, :extra, :is_activated, :created_at, :updated_at) " +
+			"RETURNING id")
 
 	if err != nil {
 		return err
 	}
 
-	return row.Scan(&o.ID)
+	return stmt.QueryRowx(o).Scan(&o.ID)
 }
 
 // UsersUpdate updates the user in a database.
@@ -132,16 +147,12 @@ func (r *Repository) UsersUpdate(o *User) error {
 
 	o.UpdatedAt = now()
 
-	query := r.db.
-		Update("users").
-		Set(map[string]interface{}{
-			"name":         o.Name,
-			"email":        o.Email,
-			"extra":        o.Extra,
-			"is_activated": o.IsActivated,
-			"updated_at":   o.UpdatedAt,
-		}).
-		Where("id", o.ID)
+	query := "UPDATE users SET " +
+		"name = :name, " +
+		"email = :email, " +
+		"extra = :extra, " +
+		"is_activated = :is_activated, " +
+		"updated_at = :updated_at"
 
 	// Update password if nesessary.
 	if o.Password != "" {
@@ -149,37 +160,28 @@ func (r *Repository) UsersUpdate(o *User) error {
 			return err
 		} else {
 			o.PasswordHash = hash
-			query = query.Set("password_hash", hash)
+			query += ", password_hash = :password_hash"
 		}
 	}
 
-	res, err := query.Exec()
+	query += " WHERE id = :id RETURNING updated_at"
 
+	stmt, err := r.db.PrepareNamed(query)
 	if err != nil {
 		return err
 	}
 
-	if n, err := res.RowsAffected(); err != nil {
-		return err
-	} else if n != 1 {
-		return sql.ErrNoRows
-	}
-
-	return nil
+	return stmt.QueryRowx(o).Scan(&o.UpdatedAt)
 }
 
 // UsersOneByID retrives the user from a database by id.
 func (r *Repository) UsersOneByID(id int64) (*User, error) {
 	var o User
 
-	err := r.db.
-		SelectFrom("users").
-		Where("id", id).
-		Limit(1).
-		One(&o)
+	err := r.db.Get(&o, "SELECT * FROM users WHERE id = $1", id)
 
 	if err != nil {
-		return nil, handleErr(err)
+		return nil, err
 	}
 
 	return &o, nil
@@ -189,14 +191,10 @@ func (r *Repository) UsersOneByID(id int64) (*User, error) {
 func (r *Repository) UsersOneByEmail(email string) (*User, error) {
 	var o User
 
-	err := r.db.
-		SelectFrom("users").
-		Where("email", email).
-		Limit(1).
-		One(&o)
+	err := r.db.Get(&o, "SELECT * FROM users WHERE email = $1", email)
 
 	if err != nil {
-		return nil, handleErr(err)
+		return nil, err
 	}
 
 	return &o, nil
@@ -206,14 +204,10 @@ func (r *Repository) UsersOneByEmail(email string) (*User, error) {
 func (r *Repository) UsersOneByName(name string) (*User, error) {
 	var o User
 
-	err := r.db.
-		SelectFrom("users").
-		Where("name", name).
-		Limit(1).
-		One(&o)
+	err := r.db.Get(&o, "SELECT * FROM users WHERE name = $1", name)
 
 	if err != nil {
-		return nil, handleErr(err)
+		return nil, err
 	}
 
 	return &o, nil
@@ -225,6 +219,7 @@ func (r *Repository) UsersLogin(email, password string) (*User, error) {
 	o, err := r.UsersOneByEmail(email)
 
 	if err != nil {
+		// TODO: check
 		// We should pass valid bcrypt hash to bcrypt.CompareHashAndPassword
 		// to prevent user enumeration by timing requests.
 		_ = crypto.CheckPassword("$2a$10$8OcntURIAZI8nYqDEacSReBce1rqiFPPgEuTBAVu5YHCsd4pwv4E2", password)
@@ -240,73 +235,64 @@ func (r *Repository) UsersLogin(email, password string) (*User, error) {
 
 // UsersDelete removes the user from a database by id.
 func (r *Repository) UsersDelete(id int64) error {
-	res, err := r.db.
-		DeleteFrom("users").
-		Where("id", id).
-		Exec()
-
-	if err != nil {
-		return err
-	}
-
-	if n, err := res.RowsAffected(); err != nil {
-		return err
-	} else if n != 1 {
-		return sql.ErrNoRows
-	}
-
-	return nil
+	return r.db.QueryRow("DELETE FROM users WHERE id = $1 RETURNING id", id).Scan(&id)
 }
 
+// TODO: rename
 // usersApplyFilters applies UsersFilters to UsersList query.
-func usersApplyFilters(query sqlbuilder.Selector, f UsersFilters) sqlbuilder.Selector {
+func usersApplyFilters(query string, f UsersFilters) (string, map[string]interface{}) {
+	cond := make([]string, 0)
+	params := make(map[string]interface{})
 
 	// Name.
 	if f.Name != "" {
-		query = query.Where(
-			udb.Cond{
-				"name ILIKE": fmt.Sprintf("%%%s%%", f.Name),
-			},
-		)
+		cond = append(cond, "name ILIKE :name")
+		params["name"] = fmt.Sprintf("%%%s%%", f.Name)
 	}
 
 	// Email.
 	if f.Email != "" {
-		query = query.Where(
-			udb.Cond{
-				"email ILIKE": fmt.Sprintf("%%%s%%", f.Email),
-			},
-		)
+		cond = append(cond, "name ILIKE :email")
+		params["email"] = fmt.Sprintf("%%%s%%", f.Email)
 	}
 
-	// Date from and date to.
-	if from, to := f.CreatedAt.From, f.CreatedAt.To; !from.IsZero() || !to.IsZero() {
-		fromCond := udb.Cond{"created_at >": from}
-		toCond := udb.Cond{"created_at <=": to}
+	// Date from.
+	if !f.CreatedAt.From.IsZero() {
+		cond = append(cond, ":created_at >= :from")
+		params["from"] = f.CreatedAt.From
+	}
 
-		switch {
-		case !from.IsZero() && !to.IsZero():
-			query = query.Where(udb.And(fromCond, toCond))
-		case !from.IsZero():
-			query = query.Where(fromCond)
-		case !to.IsZero():
-			query = query.Where(toCond)
-		}
+	// Date to.
+	if !f.CreatedAt.To.IsZero() {
+		cond = append(cond, ":created_at <= :to")
+		params["from"] = f.CreatedAt.To
 	}
 
 	// IsActivated
 	if f.IsActivated != nil {
-		query = query.Where("is_activated = ?", *f.IsActivated)
+		cond = append(cond, "name ILIKE :is_activated")
+		params["is_activated"] = *f.IsActivated
 	}
 
 	// Extra fields.
 	if f.Extra != nil {
+		// TODO: whitelist
 		for k, v := range f.Extra {
-			query = query.Where("extra->>? IN ?", k, v)
+			key := fmt.Sprintf("extra_%s_key", k)
+			value := fmt.Sprintf("extra_%s_value", k)
+			cond = append(cond, fmt.Sprintf("extra ->> :%s = :%s", key, value))
+			params[key] = k
+			params[value] = v
 		}
+		extra, _ := json.Marshal(f.Extra)
+		params["extra"] = extra
 	}
 
-	return query
+	if len(cond) > 0 {
+		query += " WHERE " + strings.Join(cond, " AND ")
+	}
+
+	return query, params
 }
 
 // UsersList returns list of users.
@@ -315,24 +301,19 @@ func (r *Repository) UsersList(opts ...usersListOption) ([]User, *PagesInfo, err
 
 	options := newUsersListOptions(opts)
 
-	query := usersApplyFilters(
-		r.db.SelectFrom("users"),
-		options.UsersFilters,
-	)
+	query, params := usersApplyFilters("SELECT * FROM users", options.UsersFilters)
+	pageQuery, params := paginate(query, params, options.Pagination)
 
-	if options.Pagination.IsZero() {
-		return list, nil, handleErr(query.All(&list))
-	}
-
-	pageQuery := query.
-		Paginate(options.Pagination.Count).
-		Cursor("-id")
-
-	if err := paginate(pageQuery, options.Pagination).All(&list); err != nil {
+	stmt, err := r.db.PrepareNamed(pageQuery)
+	if err != nil {
 		return nil, nil, err
 	}
 
-	pi, err := r.pagesInfo(pageQuery, options.Pagination, list)
+	if err := stmt.Select(&list, params); err != nil {
+		return nil, nil, err
+	}
+
+	pi, err := r.pagesInfo(query, params, options.Pagination, list)
 
 	if err != nil {
 		return nil, nil, err

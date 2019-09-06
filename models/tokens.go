@@ -2,22 +2,10 @@ package models
 
 import (
 	"crypto/rand"
-	"database/sql"
 	"encoding/hex"
 	"io"
 	"time"
 )
-
-type TokensRepository interface {
-	Insert(*Token) error
-	Delete(int64) error
-
-	OneByID(int64) (*Token, error)
-	OneByTokenAndType(string, TokenType) (*Token, error)
-	OneByUserAndType(int64, TokenType) (*Token, error)
-
-	New(int64, TokenType, time.Duration) (*Token, error)
-}
 
 type TokenType string
 
@@ -57,30 +45,25 @@ func (r *Repository) TokensNew(userID int64, tp TokenType, lifetime time.Duratio
 func (r *Repository) TokensInsert(o *Token) error {
 	o.CreatedAt = now()
 
-	row, err := r.db.
-		InsertInto("tokens").
-		Values(o).
-		Returning("id").
-		QueryRow()
+	stmt, err := r.db.PrepareNamed(
+		"INSERT INTO tokens (user_id, token, type, expires_at, created_at) " +
+			"VALUES(:user_id, :token, :type, :expires_at, :created_at) " +
+			"RETURNING id")
 
 	if err != nil {
 		return err
 	}
 
-	return row.Scan(&o.ID)
+	return stmt.QueryRowx(o).Scan(&o.ID)
 }
 
 func (r *Repository) TokensOneByID(id int64) (*Token, error) {
 	var o Token
 
-	err := r.db.
-		SelectFrom("tokens").
-		Where("id", id).
-		Limit(1).
-		One(&o)
+	err := r.db.Get(&o, "SELECT * FROM tokens WHERE id = $1", id)
 
 	if err != nil {
-		return nil, handleErr(err)
+		return nil, err
 	}
 
 	return &o, nil
@@ -89,15 +72,10 @@ func (r *Repository) TokensOneByID(id int64) (*Token, error) {
 func (r *Repository) TokensOneByTokenAndType(token string, tp TokenType) (*Token, error) {
 	var o Token
 
-	err := r.db.
-		SelectFrom("tokens").
-		Where("token", token).
-		And("type", tp).
-		Limit(1).
-		One(&o)
+	err := r.db.Get(&o, "SELECT * FROM tokens WHERE token = $1 and type = $2", token, tp)
 
 	if err != nil {
-		return nil, handleErr(err)
+		return nil, err
 	}
 
 	return &o, nil
@@ -106,35 +84,15 @@ func (r *Repository) TokensOneByTokenAndType(token string, tp TokenType) (*Token
 func (r *Repository) TokensOneByUserAndType(userID int64, tp TokenType) (*Token, error) {
 	var o Token
 
-	err := r.db.
-		SelectFrom("tokens").
-		Where("user_id", userID).
-		And("type", tp).
-		Limit(1).
-		One(&o)
+	err := r.db.Get(&o, "SELECT * FROM tokens WHERE user_id = $1 and type = $2", userID, tp)
 
 	if err != nil {
-		return nil, handleErr(err)
+		return nil, err
 	}
 
 	return &o, nil
 }
 
 func (r *Repository) TokensDelete(id int64) error {
-	res, err := r.db.
-		DeleteFrom("tokens").
-		Where("id", id).
-		Exec()
-
-	if err != nil {
-		return err
-	}
-
-	if n, err := res.RowsAffected(); err != nil {
-		return err
-	} else if n != 1 {
-		return sql.ErrNoRows
-	}
-
-	return nil
+	return r.db.QueryRow("DELETE FROM tokens WHERE id = $1 RETURNING id", id).Scan(&id)
 }

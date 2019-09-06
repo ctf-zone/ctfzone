@@ -55,8 +55,6 @@ func Test_Challenges_Update_Success(t *testing.T) {
 
 	o2, err := db.ChallengesOneByID(1)
 	assert.NoError(t, err)
-
-	o2.UpdatedAt = o2.UpdatedAt.UTC()
 	assert.Equal(t, o1, o2)
 
 	assert.True(t, o2.UpdatedAt.After(updatedAt))
