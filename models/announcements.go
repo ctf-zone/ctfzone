@@ -1,12 +1,9 @@
 package models
 
 import (
-	"database/sql"
 	"fmt"
+	"strings"
 	"time"
-
-	udb "upper.io/db.v3"
-	"upper.io/db.v3/lib/sqlbuilder"
 )
 
 type Announcement struct {
@@ -76,107 +73,83 @@ func (r *Repository) AnnouncementsInsert(o *Announcement) error {
 	o.CreatedAt = now()
 	o.UpdatedAt = o.CreatedAt
 
-	row, err := r.db.
-		InsertInto("announcements").
-		Values(o).
-		Returning("id").
-		QueryRow()
+	stmt, err := r.db.PrepareNamed(
+		"INSERT INTO announcements (title, body, challenge_id, created_at, updated_at) " +
+			"VALUES(:title, :body, :challenge_id, :created_at, :updated_at) " +
+			"RETURNING id")
 
 	if err != nil {
 		return err
 	}
 
-	return row.Scan(&o.ID)
+	return stmt.QueryRowx(o).Scan(&o.ID)
+
 }
 
 func (r *Repository) AnnouncementsUpdate(o *Announcement) error {
 	o.UpdatedAt = now()
 
-	res, err := r.db.
-		Update("announcements").
-		Set(map[string]interface{}{
-			"title":        o.Title,
-			"body":         o.Body,
-			"challenge_id": o.ChallengeID,
-			"updated_at":   o.UpdatedAt,
-		}).
-		Where("id", o.ID).
-		Exec()
+	query := "UPDATE announcements SET " +
+		"title = :title, " +
+		"body = :body, " +
+		"challenge_id = :challenge_id, " +
+		"updated_at = :updated_at " +
+		"WHERE id = :id RETURNING updated_at"
 
+	stmt, err := r.db.PrepareNamed(query)
 	if err != nil {
 		return err
 	}
 
-	if n, err := res.RowsAffected(); err != nil {
-		return err
-	} else if n != 1 {
-		return sql.ErrNoRows
-	}
-
-	return nil
+	return stmt.QueryRowx(o).Scan(&o.UpdatedAt)
 }
 
 func (r *Repository) AnnouncementsDelete(id int64) error {
-	res, err := r.db.
-		DeleteFrom("announcements").
-		Where("id", id).
-		Exec()
-
-	if err != nil {
-		return err
-	}
-
-	if n, err := res.RowsAffected(); err != nil {
-		return err
-	} else if n != 1 {
-		return sql.ErrNoRows
-	}
-
-	return nil
+	return r.db.QueryRow("DELETE FROM announcements WHERE id = $1 RETURNING id", id).Scan(&id)
 }
 
-func announcementsApplyFilters(query sqlbuilder.Selector, f AnnouncementsFilters) sqlbuilder.Selector {
+func announcementsApplyFilters(query string, f AnnouncementsFilters) (string, map[string]interface{}) {
+	cond := make([]string, 0)
+	params := make(map[string]interface{})
+
 	if f.Title != "" {
-		query = query.Where(
-			udb.Cond{
-				"title ILIKE": fmt.Sprintf("%%%s%%", f.Title),
-			},
-		)
+		cond = append(cond, "title ILIKE :title")
+		params["title"] = fmt.Sprintf("%%%s%%", f.Title)
 	}
 
 	if f.ChallengeID != nil {
-		query = query.Where("challenge_id", *f.ChallengeID)
+		cond = append(cond, "challenge_id = :challenge_id")
+		params["challenge_id"] = *f.ChallengeID
 	}
 
-	return query
+	if len(cond) > 0 {
+		query += " WHERE " + strings.Join(cond, " AND ")
+	}
+
+	return query, params
 }
 
-func (r *Repository) AnnouncementsList(options ...announcementsOption) (Announcements, *PagesInfo, error) {
+func (r *Repository) AnnouncementsList(opts ...announcementsOption) (Announcements, *PagesInfo, error) {
 	list := make(Announcements, 0)
 
-	var opts announcementsOptions
-	for _, option := range options {
-		option(&opts)
+	var options announcementsOptions
+	for _, opt := range opts {
+		opt(&options)
 	}
 
-	query := announcementsApplyFilters(
-		r.db.SelectFrom("announcements"),
-		opts.AnnouncementsFilters,
-	)
+	query, params := announcementsApplyFilters("SELECT * FROM announcements", options.AnnouncementsFilters)
+	pageQuery, params := paginate(query, params, options.Pagination)
 
-	if opts.Pagination.IsZero() {
-		return list, nil, handleErr(query.All(&list))
-	}
-
-	pageQuery := query.
-		Paginate(opts.Pagination.Count).
-		Cursor("-id")
-
-	if err := paginate(pageQuery, opts.Pagination).All(&list); err != nil {
+	stmt, err := r.db.PrepareNamed(pageQuery)
+	if err != nil {
 		return nil, nil, err
 	}
 
-	pi, err := r.pagesInfo(pageQuery, opts.Pagination, list)
+	if err := stmt.Select(&list, params); err != nil {
+		return nil, nil, err
+	}
+
+	pi, err := r.pagesInfo(query, params, options.Pagination, list)
 
 	if err != nil {
 		return nil, nil, err
@@ -188,14 +161,10 @@ func (r *Repository) AnnouncementsList(options ...announcementsOption) (Announce
 func (r *Repository) AnnouncementsOneByID(id int64) (*Announcement, error) {
 	var o Announcement
 
-	err := r.db.
-		SelectFrom("announcements").
-		Where("id", id).
-		Limit(1).
-		One(&o)
+	err := r.db.Get(&o, "SELECT * FROM announcements WHERE id = $1", id)
 
 	if err != nil {
-		return nil, handleErr(err)
+		return nil, err
 	}
 
 	return &o, nil

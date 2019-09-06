@@ -24,11 +24,10 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/require"
 	"github.com/xeipuuv/gojsonschema"
-	"upper.io/db.v3/postgresql"
 
 	"github.com/ctf-zone/ctfzone/config"
 	"github.com/ctf-zone/ctfzone/controllers/schemas"
-	"github.com/ctf-zone/ctfzone/internal/mailer/mock"
+	mailer_mock "github.com/ctf-zone/ctfzone/internal/mailer/mock"
 	"github.com/ctf-zone/ctfzone/models"
 	"github.com/ctf-zone/ctfzone/models/migrations"
 
@@ -87,17 +86,13 @@ func setupMailer() {
 func setupDB() error {
 	var err error
 
-	db, err = sql.Open("postgres", os.Getenv("CTF_DB_DSN"))
+	dsn := os.Getenv("CTF_DB_DSN")
+	db, err = sql.Open("postgres", dsn)
 	if err != nil {
 		return errors.Wrap(err, "fail to connect")
 	}
 
-	upperDB, err := postgresql.New(db)
-	if err != nil {
-		return errors.Wrap(err, "fail init sqlbuilder.Database")
-	}
-
-	dbm, err = models.NewWithDB(upperDB)
+	dbm, err = models.New(dsn)
 	if err != nil {
 		return errors.Wrap(err, "fail to init models")
 	}

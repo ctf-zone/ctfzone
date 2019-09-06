@@ -1,16 +1,8 @@
 package models
 
 import (
-	"database/sql"
 	"time"
 )
-
-type LikesRepository interface {
-	Insert(*Like) error
-	Delete(int64, int64) error
-
-	OneByID(int64, int64) (*Like, error)
-}
 
 type Like struct {
 	UserID      int64     `db:"user_id"      json:"userId"`
@@ -19,49 +11,32 @@ type Like struct {
 }
 
 func (r *Repository) LikesInsert(o *Like) error {
-
 	o.CreatedAt = now()
 
-	// TODO: id
-	_, err := r.db.
-		InsertInto("likes").
-		Values(o).
-		Exec()
-
-	return err
-}
-
-func (r *Repository) LikesDelete(userID, challengeID int64) error {
-	res, err := r.db.
-		DeleteFrom("likes").
-		Where("user_id", userID).
-		And("challenge_id", challengeID).
-		Exec()
+	stmt, err := r.db.PrepareNamed(
+		"INSERT INTO likes (user_id, challenge_id, created_at) " +
+			"VALUES(:user_id, :challenge_id, :created_at) " +
+			"RETURNING created_at")
 
 	if err != nil {
 		return err
 	}
 
-	if n, err := res.RowsAffected(); err != nil {
-		return err
-	} else if n != 1 {
-		return sql.ErrNoRows
-	}
+	return stmt.QueryRowx(o).Scan(&o.CreatedAt)
+}
 
-	return nil
+func (r *Repository) LikesDelete(userID, challengeID int64) error {
+	return r.db.QueryRow("DELETE FROM likes WHERE user_id = $1 AND challenge_id = $2 RETURNING user_id",
+		userID, challengeID).Scan(&userID)
 }
 
 func (r *Repository) LikesOneByID(userID, challengeID int64) (*Like, error) {
 	var o Like
 
-	err := r.db.
-		SelectFrom("likes").
-		Where("user_id", userID).
-		And("challenge_id", challengeID).
-		One(&o)
+	err := r.db.Get(&o, "SELECT * FROM likes WHERE user_id = $1 and challenge_id = $2", userID, challengeID)
 
 	if err != nil {
-		return nil, handleErr(err)
+		return nil, err
 	}
 
 	return &o, nil

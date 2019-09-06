@@ -1,24 +1,25 @@
 package models_test
 
 import (
-	"database/sql"
 	"fmt"
+	"log"
 	"os"
 	"testing"
 
 	"github.com/go-testfixtures/testfixtures"
+	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
-	"upper.io/db.v3/lib/sqlbuilder"
-	"upper.io/db.v3/postgresql"
 
+	"github.com/ctf-zone/ctfzone/models"
 	. "github.com/ctf-zone/ctfzone/models"
+	"github.com/ctf-zone/ctfzone/models/migrations"
 )
 
 var (
 	db       *Repository
-	upperDB  sqlbuilder.Database
+	dbx      *sqlx.DB
 	fixtures *testfixtures.Context
 )
 
@@ -46,22 +47,21 @@ func setupGlobals() error {
 
 	var err error
 
-	sqlDB, err := sql.Open("postgres", dsn)
-	if err != nil {
-		return errors.Wrap(err, "fail to connect database")
-	}
-
-	upperDB, err = postgresql.New(sqlDB)
-	if err != nil {
-		return errors.Wrap(err, "fail init sqlbuilder.Database")
-	}
-
-	db, err = NewWithDB(upperDB)
+	db, err = models.New(dsn)
 	if err != nil {
 		return errors.Wrap(err, "fail to init models")
 	}
 
-	fixtures, err = testfixtures.NewFolder(sqlDB,
+	dbx, err = sqlx.Connect("postgres", dsn)
+	if err != nil {
+		return errors.Wrap(err, "fail to connect database")
+	}
+
+	if err := migrations.Up(dsn); err != nil {
+		log.Fatal(err)
+	}
+
+	fixtures, err = testfixtures.NewFolder(dbx.DB,
 		&testfixtures.PostgreSQL{}, "fixtures")
 	if err != nil {
 		return errors.Wrap(err, "fail to load fixtures")

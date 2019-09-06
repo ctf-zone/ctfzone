@@ -4,12 +4,6 @@ import (
 	"time"
 )
 
-type SolutionsRepository interface {
-	Insert(*Solution) error
-
-	OneByID(int64, int64) (*Solution, error)
-}
-
 type Solution struct {
 	UserID      int64     `db:"user_id"      json:"userId"`
 	ChallengeID int64     `db:"challenge_id" json:"challengeId"`
@@ -19,26 +13,25 @@ type Solution struct {
 func (r *Repository) SolutionsInsert(o *Solution) error {
 	o.CreatedAt = now()
 
-	// TODO: id
-	_, err := r.db.
-		InsertInto("solutions").
-		Values(o).
-		Exec()
+	stmt, err := r.db.PrepareNamed(
+		"INSERT INTO solutions (user_id, challenge_id, created_at) " +
+			"VALUES(:user_id, :challenge_id, :created_at) " +
+			"RETURNING created_at")
 
-	return err
+	if err != nil {
+		return err
+	}
+
+	return stmt.QueryRowx(o).Scan(&o.CreatedAt)
 }
 
 func (r *Repository) SolutionsOneByID(userID, challengeID int64) (*Solution, error) {
 	var o Solution
 
-	err := r.db.
-		SelectFrom("solutions").
-		Where("user_id", userID).
-		And("challenge_id", challengeID).
-		One(&o)
+	err := r.db.Get(&o, "SELECT * FROM solutions WHERE user_id = $1 and challenge_id = $2", userID, challengeID)
 
 	if err != nil {
-		return nil, handleErr(err)
+		return nil, err
 	}
 
 	return &o, nil

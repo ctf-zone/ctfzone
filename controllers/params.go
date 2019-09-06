@@ -15,8 +15,7 @@ func init() {
 		for _, pair := range strings.Split(input, ";") {
 			parts := strings.Split(pair, ":")
 			if len(parts) == 2 {
-				k, vv := parts[0], strings.Split(parts[1], ",")
-				m[k] = vv
+				m[parts[0]] = parts[1]
 			}
 		}
 		return reflect.ValueOf(m)
