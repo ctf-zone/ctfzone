@@ -1,9 +1,22 @@
 name: Build and Test
-on: [push]
+on:
+  push:
+    branches:
+      - master
 jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:11.5
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432/tcp
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - name: Set up Golang
         uses: actions/setup-go@v1
@@ -15,3 +28,5 @@ jobs:
 
       - name: Run unit tests
         run: make test
+        env:
+          CTF_DB_DSN: 'postgres://postgres:postgres@localhost:5432/postgres_test?sslmode=disable'
