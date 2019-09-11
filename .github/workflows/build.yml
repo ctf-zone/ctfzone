@@ -29,4 +29,4 @@ jobs:
       - name: Run unit tests
         run: make test
         env:
-          CTF_DB_DSN: 'postgres://postgres:postgres@localhost:5432/postgres_test?sslmode=disable'
+          CTF_DB_DSN: 'postgres://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/postgres_test?sslmode=disable'
