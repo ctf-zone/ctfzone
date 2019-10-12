@@ -10,7 +10,13 @@ export default {
   // TODO: replace data with fields
   effects: {
     async register(data) {
-      await api.post('/auth/register', data);
+      const { reCaptchaResponse, ...rest } = data;
+      console.log(reCaptchaResponse, rest);
+      await api.post('/auth/register', rest, {
+        headers: {
+          'X-G-Recaptcha-Response': reCaptchaResponse,
+        }
+      });
     },
     async login(data) {
       await api.post('/auth/login', data);

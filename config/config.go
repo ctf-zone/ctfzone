@@ -86,7 +86,7 @@ type Config struct {
 	DB        DB        `json:"db"`
 	Email     Email     `json:"email"`
 	Game      Game      `json:"game"`
-	ReCaptcha ReCaptcha `json:"reCaptcha"`
+	ReCaptcha ReCaptcha `json:"recaptcha"`
 	Session   Session   `json:"session"`
 	Files     Files     `json:"files"`
 	Server    Server    `json:"server"`

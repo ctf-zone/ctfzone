@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { createForm } from 'rc-form';
+import Recaptcha from 'react-recaptcha';
 
 import { FormItem, Button } from '../../../components';
 
@@ -89,6 +90,23 @@ class SignupForm extends Component {
     );
   }
 
+  renderReCaptcha(verifyCallback) {
+    return (
+      <FormItem>
+        <div style={{'paddingBottom': '10px'}}>
+          <Recaptcha
+            sitekey='6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
+            render='explicit'
+            verifyCallback={verifyCallback}
+            onloadCallback={() => {
+              console.log('loaded');
+            }}
+          />
+        </div>
+      </FormItem>
+    );
+  }
+
   renderSubmitButton({ getFieldError, isFieldTouched }) {
     const canSubmit = ['name', 'email', 'password'].reduce((result, field) => {
       return result && isFieldTouched(field) && !getFieldError(field);
@@ -102,13 +120,14 @@ class SignupForm extends Component {
   }
 
   render() {
-    const { form, className } = this.props;
+    const { form, className, verifyCallback } = this.props;
 
     return (
       <form className={className} onSubmit={this.handleSubmit}>
         {this.renderNameField(form)}
         {this.renderEmailField(form)}
         {this.renderPaswordField(form)}
+        {this.renderReCaptcha(verifyCallback)}
         {this.renderSubmitButton(form)}
       </form>
     );

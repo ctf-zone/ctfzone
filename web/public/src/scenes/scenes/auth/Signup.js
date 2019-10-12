@@ -15,14 +15,17 @@ class Signup extends Component {
 
   state = {
     fields: {},
+    reCaptchaResponse: '',
     tokenIsSent: false
   };
 
   handleSubmit = async values => {
     const { authRegister } = this.props;
+    const { reCaptchaResponse } = this.state
 
     try {
-      await authRegister(values, { throw: true });
+      console.log({...values, reCaptchaResponse});
+      await authRegister({ ...values, reCaptchaResponse }, { throw: true });
       this.setState({ tokenIsSent: true });
     } catch (e) {
       if (e.status === 400 || e.status === 409) {
@@ -36,6 +39,11 @@ class Signup extends Component {
   handleChange = fields => {
     this.setState({ fields });
   };
+
+  handleReCaptcha = response => {
+    console.log(response);
+    this.setState({ reCaptchaResponse: response });
+  }
 
   render() {
     const { tokenIsSent } = this.state;
@@ -52,6 +60,7 @@ class Signup extends Component {
             fields={this.state.fields}
             onSubmit={this.handleSubmit}
             onChange={this.handleChange}
+            verifyCallback={this.handleReCaptcha}
           />
         )}
         <div className="ctf-form-links">
