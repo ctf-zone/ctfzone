@@ -24,7 +24,7 @@ class FilesTree extends Component {
         isLeaf={!node.isDirectory || node.items.length === 0}
       >
         {this.renderNodes(node.items || [], `${keyPrefix}-${i}`)}
-      </Tree.TreeNode>
+      </Tree.TreeNode>,
     )
 
     return listNodes
@@ -47,12 +47,12 @@ class FilesTree extends Component {
 }
 
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
     files: state.files,
     filesListResult: state.api.effects.files.list,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
     filesList: dispatch.files.list,
 });
 

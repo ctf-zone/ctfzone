@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
-import { Form, Input, Icon, Button } from 'antd'
+import { Form, Input, Button, Icon } from 'antd'
 
 import logo from '../../../../../images/logo-big.svg'
 
@@ -44,7 +44,7 @@ class LoginForm extends Component {
     }
   }
 
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault()
 
     const { authLogin } = this.props
@@ -67,11 +67,11 @@ class LoginForm extends Component {
           ],
         })(
           <Input
-            ref={el => this.passwordInput = el}
-            prefix={<Icon type='lock'/>}
+            ref={(el) => this.passwordInput = el}
+            prefix={<Icon type='lock' />}
             type='password'
             placeholder='Password'
-          />
+          />,
         )}
       </Form.Item>
     )
@@ -113,11 +113,11 @@ class LoginForm extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   ...state.api.effects.auth.login,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   authLogin: dispatch.auth.login,
 });
 
@@ -133,5 +133,5 @@ const mapPropsToFields = ({ error }) => {
 };
 
 export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(Form.create({ mapPropsToFields })(LoginForm))
+  connect(mapStateToProps, mapDispatchToProps)(Form.create({ mapPropsToFields })(LoginForm)),
 );

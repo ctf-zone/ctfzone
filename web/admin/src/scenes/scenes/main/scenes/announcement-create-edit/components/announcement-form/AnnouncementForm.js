@@ -4,9 +4,9 @@ import { connect } from 'react-redux'
 import {
   Form,
   Input,
-  Icon,
   Button,
   Select,
+  Icon,
 } from 'antd'
 
 import { MarkdownEditor } from '../../../../../../../components'
@@ -66,7 +66,7 @@ class AnnouncementForm extends Component {
         })(
           <Input
             prefix={<Icon type='profile' />}
-          />
+          />,
         )}
       </Form.Item>
     )
@@ -124,7 +124,7 @@ class AnnouncementForm extends Component {
             allowClear={true}
           >
             {options}
-          </Select>
+          </Select>,
         )}
       </Form.Item>
     )
@@ -170,7 +170,7 @@ const onFieldsChange = (props, changedFields) => {
 
 const mapStateToProps = () => ({});
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   filesUpload: dispatch.files.upload,
 });
 

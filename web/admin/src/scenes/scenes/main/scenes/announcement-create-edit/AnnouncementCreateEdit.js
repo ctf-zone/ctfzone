@@ -17,14 +17,12 @@ class ChallengeCreateEdit extends Component {
     announcementsCreate: PropTypes.func,
     announcementsUpdate: PropTypes.func,
     announcementsGet: PropTypes.func,
+    challengesList: PropTypes.func.isRequired,
     challenges: PropTypes.array,
 
     // @withRouter
     match: PropTypes.object.isRequired,
-  }
-
-  static defaultState = {
-    fields: {},
+    history: PropTypes.object.isRequired,
   }
 
   state = {
@@ -55,6 +53,10 @@ class ChallengeCreateEdit extends Component {
     const { challengesList } = this.props
 
     await challengesList({})
+  }
+
+  static defaultState = {
+    fields: {},
   }
 
   handleChange = (changedFields) => {
@@ -125,12 +127,12 @@ class ChallengeCreateEdit extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   announcement: state.announcements.item,
   challenges: state.challenges.challenges,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   announcementsCreate: dispatch.announcements.create,
   announcementsUpdate: dispatch.announcements.update,
   announcementsGet: dispatch.announcements.get,

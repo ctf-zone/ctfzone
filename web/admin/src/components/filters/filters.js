@@ -1,5 +1,6 @@
 import React from 'react'
 import { Input, Radio, Select, DatePicker } from 'antd'
+import PropTypes from 'prop-types'
 
 import FilterIcon from '../filter-icon/FilterIcon'
 import FilterDropdown from '../filter-dropdown/FilterDropdown'
@@ -9,7 +10,7 @@ import FilterDropdown from '../filter-dropdown/FilterDropdown'
 export const textFilter = (name, { handleFilterSet, handleFilterReset, isFiltered }) => {
   let ref
 
-  return {
+  let result = {
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
       return (
         <FilterDropdown
@@ -17,14 +18,14 @@ export const textFilter = (name, { handleFilterSet, handleFilterReset, isFiltere
           onReset={handleFilterReset(name, clearFilters)}
         >
           <Input
-            ref={el => ref = el}
+            ref={(el) => ref = el}
             value={selectedKeys[0]}
-            onChange={e => setSelectedKeys([e.target.value])}
+            onChange={(e) => setSelectedKeys([e.target.value])}
           />
         </FilterDropdown>
       )
     },
-    onFilterDropdownVisibleChange: visible => {
+    onFilterDropdownVisibleChange: (visible) => {
       if (visible) {
         setTimeout(() => {
           ref.focus()
@@ -33,10 +34,19 @@ export const textFilter = (name, { handleFilterSet, handleFilterReset, isFiltere
     },
     filterIcon: <FilterIcon isFiltered={isFiltered(name)} />,
   }
+
+  result.filterDropdown.propTypes = {
+    setSelectedKeys: PropTypes.func.isRequired,
+    confirm: PropTypes.func.isRequired,
+    clearFilters: PropTypes.func.isRequired,
+    selectedKeys: PropTypes.array.isRequired,
+  };
+
+  return result
 }
 
 export const radioFilter = (name, values, { handleFilterSet, handleFilterReset, isFiltered }) => {
-  return {
+  let result = {
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
       return (
         <FilterDropdown
@@ -44,7 +54,7 @@ export const radioFilter = (name, values, { handleFilterSet, handleFilterReset, 
           onReset={handleFilterReset(name, clearFilters)}
         >
           <Radio.Group
-            onChange={e => setSelectedKeys([e.target.value])}
+            onChange={(e) => setSelectedKeys([e.target.value])}
             value={selectedKeys[0]}
           >
             {
@@ -56,12 +66,21 @@ export const radioFilter = (name, values, { handleFilterSet, handleFilterReset, 
     },
     filterIcon: <FilterIcon isFiltered={isFiltered(name)} />,
   }
+
+  result.filterDropdown.propTypes = {
+    setSelectedKeys: PropTypes.func.isRequired,
+    confirm: PropTypes.func.isRequired,
+    clearFilters: PropTypes.func.isRequired,
+    selectedKeys: PropTypes.array.isRequired,
+  };
+
+  return result
 }
 
 export const selectFilter = (name, values, { handleFilterSet, handleFilterReset, isFiltered }) => {
   let ref
 
-  return {
+  let result = {
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
       return (
         <FilterDropdown
@@ -69,13 +88,13 @@ export const selectFilter = (name, values, { handleFilterSet, handleFilterReset,
           onReset={handleFilterReset(name, clearFilters)}
         >
           <Select
-            ref={el => ref = el}
+            ref={(el) => ref = el}
             mode='multiple'
             optionFilterProp='children'
             style={{ width: '200px' }}
-            onChange={values => setSelectedKeys([values])}
+            onChange={(values) => setSelectedKeys([values])}
             value={selectedKeys[0]}
-            getPopupContainer={triggerNode => triggerNode.parentNode}
+            getPopupContainer={(triggerNode) => triggerNode.parentNode}
           >
             {
               values.map(({ value, data }) => {
@@ -88,7 +107,7 @@ export const selectFilter = (name, values, { handleFilterSet, handleFilterReset,
         </FilterDropdown>
       )
     },
-    onFilterDropdownVisibleChange: visible => {
+    onFilterDropdownVisibleChange: (visible) => {
       if (visible) {
         setTimeout(() => {
           ref.focus()
@@ -97,10 +116,19 @@ export const selectFilter = (name, values, { handleFilterSet, handleFilterReset,
     },
     filterIcon: <FilterIcon isFiltered={isFiltered(name)} />,
   }
+
+  result.filterDropdown.propTypes = {
+    setSelectedKeys: PropTypes.func.isRequired,
+    confirm: PropTypes.func.isRequired,
+    clearFilters: PropTypes.func.isRequired,
+    selectedKeys: PropTypes.array.isRequired,
+  };
+
+  return result
 }
 
 export const dateRangeFilter = (name, { handleFilterSet, handleFilterReset, isFiltered }) => {
-  return {
+  let result = {
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
       return (
         <FilterDropdown
@@ -116,13 +144,22 @@ export const dateRangeFilter = (name, { handleFilterSet, handleFilterReset, isFi
                 },
               ])
             }}
-            getCalendarContainer={triggerNode => triggerNode.parentNode}
+            getCalendarContainer={(triggerNode) => triggerNode.parentNode}
           />
         </FilterDropdown>
       )
     },
     filterIcon: <FilterIcon isFiltered={isFiltered(name)} />,
   }
+
+  result.filterDropdown.propTypes = {
+    setSelectedKeys: PropTypes.func.isRequired,
+    confirm: PropTypes.func.isRequired,
+    clearFilters: PropTypes.func.isRequired,
+    selectedKeys: PropTypes.array.isRequired,
+  };
+
+  return result
 }
 
 /* eslint-enable react/display-name */

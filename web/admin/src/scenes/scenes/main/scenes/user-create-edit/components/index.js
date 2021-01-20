@@ -1,5 +1,3 @@
-import UserForm from './user-form/UserForm'
+import UserForm from "./user-form/UserForm";
 
-export {
-  UserForm,
-}
+export { UserForm };

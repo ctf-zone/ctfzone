@@ -8,7 +8,6 @@ import { Nav, Sidebar } from './components'
 
 import * as scenes from './scenes'
 
-import menuItems from './menu.json'
 import styles from './Main.module.css'
 
 class Main extends Component {
@@ -42,9 +41,7 @@ class Main extends Component {
   renderSidebar() {
     return (
       <Sidebar>
-        <Nav
-          menuItems={menuItems}
-        />
+        <Nav />
       </Sidebar>
     )
   }
@@ -128,12 +125,12 @@ class Main extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   isLoggedIn: state.api.models.auth.success,
   isChecking: state.api.models.auth.loading,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   authCheck: dispatch.auth.check,
 });
 

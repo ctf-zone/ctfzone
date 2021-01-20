@@ -3,20 +3,19 @@ import * as _ from 'lodash'
 
 import { set, unset } from '../../utils/object'
 
-export default WrappedComponent => {
+export default (WrappedComponent) => {
   return class WithFilters extends Component {
+    state = {
+      filters: {},
+      resetFilters: {},
+    }
 
     static defaultState = {
       filters: {},
       resetFilters: {},
     }
 
-    state = {
-      filters: {},
-      resetFilters: {},
-    }
-
-    isFiltered = path => {
+    isFiltered = (path) => {
       return _.has(this.state.filters, path)
     }
 
@@ -52,7 +51,7 @@ export default WrappedComponent => {
 
     handleResetFilters = () => {
       Object.values(this.state.resetFilters).
-        forEach(clear => clear())
+        forEach((clear) => clear())
 
       this.setState({
         filters: {},

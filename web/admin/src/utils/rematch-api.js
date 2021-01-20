@@ -1,6 +1,6 @@
 import { ApiError } from '../utils/api'
 
-const createReducer = initial => (state, { name, action, payload = {} }) => {
+const createReducer = (initial) => (state, { name, action, payload = {} }) => {
   const mixin = { ...initial, ...payload }
 
   return {
@@ -63,7 +63,7 @@ export default ({ blacklist = [ 'api' ], whitelist = [] }) => ({
     api.state.models[name] = { ...initialState }
     api.state.effects[name] = {}
 
-    Object.keys(this.dispatch[name]).forEach(action => {
+    Object.keys(this.dispatch[name]).forEach((action) => {
 
       if (!this.dispatch[name][action].isEffect) {
         return

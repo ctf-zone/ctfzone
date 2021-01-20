@@ -16,13 +16,13 @@ class ChallengeCreateEdit extends Component {
     challenge: PropTypes.object.isRequired,
     game: PropTypes.object.isRequired,
     gameGet: PropTypes.func.isRequired,
+    challengesGet: PropTypes.func.isRequired,
+    challengesCreate: PropTypes.func.isRequired,
+    challengesUpdate: PropTypes.func.isRequired,
 
     // @withRouter
     match: PropTypes.object.isRequired,
-  }
-
-  static defaultState = {
-    fields: {},
+    history: PropTypes.object.isRequired,
   }
 
   state = {
@@ -45,6 +45,10 @@ class ChallengeCreateEdit extends Component {
         fields: addValues(fields, challenge.challenge),
       }))
     }
+  }
+
+  static defaultState = {
+    fields: {},
   }
 
   handleChange = (fields) => {
@@ -106,12 +110,12 @@ class ChallengeCreateEdit extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   challenge: state.challenges.challenge,
   game: state.game,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   challengesCreate: dispatch.challenges.create,
   challengesUpdate: dispatch.challenges.update,
   challengesGet: dispatch.challenges.get,

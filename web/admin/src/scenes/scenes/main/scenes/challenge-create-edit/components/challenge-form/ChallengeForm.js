@@ -4,18 +4,18 @@ import { connect } from 'react-redux'
 import {
   Form,
   Input,
-  Icon,
   Select,
   InputNumber,
   Checkbox,
   Switch,
   Button,
+  Icon,
 } from 'antd'
 
 import { MarkdownEditor } from '../../../../../../../components'
 import { mapPropsToFields, hasErrors } from '../../../../../../../utils/form'
 
-import styles from './ChallengeForm.module.css'
+//import styles from './ChallengeForm.module.css'
 
 class ChallengeForm extends Component {
 
@@ -75,7 +75,7 @@ class ChallengeForm extends Component {
         })(
           <Input
             prefix={<Icon type='profile' />}
-          />
+          />,
         )}
       </Form.Item>
     )
@@ -139,7 +139,7 @@ class ChallengeForm extends Component {
             optionFilterProp='children'
           >
             {options}
-          </Select>
+          </Select>,
         )}
       </Form.Item>
     )
@@ -158,7 +158,7 @@ class ChallengeForm extends Component {
           <InputNumber
             min={1}
             step={100}
-          />
+          />,
         )}
       </Form.Item>
     )
@@ -186,7 +186,7 @@ class ChallengeForm extends Component {
             <Select.Option key='easy'>easy</Select.Option>
             <Select.Option key='medium'>medium</Select.Option>
             <Select.Option key='hard'>hard</Select.Option>
-          </Select>
+          </Select>,
         )}
       </Form.Item>
     )
@@ -202,7 +202,7 @@ class ChallengeForm extends Component {
           <Checkbox onChange={() => {
             const { resetFields } = this.props.form
             resetFields('flag')
-          }} />
+          }} />,
         )}
       </Form.Item>
     )
@@ -236,7 +236,7 @@ class ChallengeForm extends Component {
             prefix={<Icon type='flag' />}
             type='password'
             disabled={isEdit && !updateFlag}
-          />
+          />,
         )}
       </Form.Item>
     )
@@ -252,7 +252,7 @@ class ChallengeForm extends Component {
           initialValue: false,
           rules: [],
         })(
-          <Switch checked={getFieldValue('isLocked')} />
+          <Switch checked={getFieldValue('isLocked')} />,
         )}
       </Form.Item>
     )
@@ -309,9 +309,9 @@ class ChallengeForm extends Component {
   }
 }
 
-const mapStateToProps = state => ({});
+const mapStateToProps = () => ({});
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
     filesUpload: dispatch.files.upload,
 });
 
