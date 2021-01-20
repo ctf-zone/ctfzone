@@ -1,4 +1,6 @@
 @import '~antd/dist/antd.css';
+@import '~codemirror/lib/codemirror.css';
+@import '~codemirror/theme/idea.css';
 
 :root {
   /* TEXT COLORS */

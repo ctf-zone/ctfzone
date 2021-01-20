@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-export default WrappedComponent => {
+export default (WrappedComponent) => {
   return class WithFiedls extends Component {
 
     static defaultState = {
@@ -13,12 +13,12 @@ export default WrappedComponent => {
       updated: {},
     }
 
-    handleFieldsChange = changedFields => {
+    handleFieldsChange = (changedFields) => {
       this.setState(({ fields, updated }) => ({
         fields: { ...fields, ...changedFields },
         updated: Object.assign(
           updated,
-          ...Object.keys(changedFields).map(field => ({ [field]: new Date() })),
+          ...Object.keys(changedFields).map((field) => ({ [field]: new Date() })),
         ),
       }))
     }

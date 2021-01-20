@@ -10,9 +10,9 @@ import {
   Row,
   Col,
   Tag,
-  Icon,
   Popconfirm,
   Divider,
+  Icon,
 } from 'antd'
 
 import {
@@ -59,7 +59,7 @@ class ChallengesTable extends Component {
     }
   }
 
-  handleChallengeDelete = challengeId => async() => {
+  handleChallengeDelete = (challengeId) => async() => {
     const { challengesDelete, challengesList, filters } = this.props
 
     await challengesDelete(challengeId)
@@ -125,10 +125,10 @@ class ChallengesTable extends Component {
         title: 'Categories',
         dataIndex: 'challenge.categories',
         width: '25%',
-        render: data => data.map((category, i) => <Tag color='blue' key={i}>{category}</Tag>),
+        render: (data) => data.map((category, i) => <Tag color='blue' key={i}>{category}</Tag>),
         ...selectFilter(
           'categories',
-          categories.map(category => ({ data: category, value: category })),
+          categories.map((category) => ({ data: category, value: category })),
           this.props,
         ),
       },
@@ -142,7 +142,7 @@ class ChallengesTable extends Component {
         title: 'Locked',
         dataIndex: 'challenge.isLocked',
         width: '10%',
-        render: data => {
+        render: (data) => {
           return (data
             ? <Icon type='lock' />
             : ''
@@ -189,7 +189,7 @@ class ChallengesTable extends Component {
     return (
       <div>
         <Table
-          rowKey={record => record.challenge.id}
+          rowKey={(record) => record.challenge.id}
           bordered={true}
           columns={columns}
           dataSource={challenges}
@@ -219,14 +219,14 @@ class ChallengesTable extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   challenges: state.challenges,
   game: state.game,
   challengesListResult: state.api.effects.challenges.list,
   challengesDeleteResult: state.api.effects.challenges.delete,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   challengesList: dispatch.challenges.list,
   challengesDelete: dispatch.challenges.delete,
   gameGet: dispatch.game.get,

@@ -185,13 +185,13 @@ class AnnouncementsTable extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
     announcements: state.announcements,
     challenges: state.challenges.challenges,
     effects: state.api.effects.announcements.list,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
     challengesList: dispatch.challenges.list,
     announcementsList: dispatch.announcements.list,
     announcementsDelete: dispatch.announcements.delete,

@@ -1,12 +1,11 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import Moment from 'react-moment'
-import * as _ from 'lodash'
-import { Link } from 'react-router-dom'
-import { connect } from 'react-redux'
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import Moment from "react-moment";
+import * as _ from "lodash";
+import { Link } from "react-router-dom";
+import { connect } from "react-redux";
 import {
   Table,
-  Icon,
   Spin,
   Button,
   Row,
@@ -14,8 +13,9 @@ import {
   Divider,
   Popconfirm,
   Upload,
+  Icon,
   message,
-} from 'antd'
+} from "antd";
 
 // import { countries } from '~/components/flag-icon/FlagIcon'
 import {
@@ -26,12 +26,11 @@ import {
   radioFilter,
   // selectFilter,
   dateRangeFilter,
-} from '../../../../../components'
+} from "../../../../../components";
 
-import styles from './UsersTable.module.css'
+import styles from "./UsersTable.module.css";
 
 class UsersTable extends Component {
-
   static propTypes = {
     dispatch: PropTypes.func,
 
@@ -49,80 +48,81 @@ class UsersTable extends Component {
     handleFilterReset: PropTypes.func,
     handleResetFilters: PropTypes.func,
     isFiltered: PropTypes.func,
-  }
+  };
 
   componentDidMount() {
-    const { usersList } = this.props
+    const { usersList } = this.props;
 
-    usersList({})
+    usersList({});
   }
 
   componentDidUpdate(prevProps) {
-    const { usersList, filters } = this.props
+    const { usersList, filters } = this.props;
 
     if (!_.isEqual(filters, prevProps.filters)) {
-      usersList({ filters })
+      usersList({ filters });
     }
   }
 
   handleUserDelete = (userId) => async() => {
-    const { usersDelete, usersList, filters } = this.props
+    const { usersDelete, usersList, filters } = this.props;
 
-    await usersDelete(userId)
-    await usersList({ filters })
-  }
+    await usersDelete(userId);
+    await usersList({ filters });
+  };
 
   handleNextButtonClick = () => {
-    const { usersList } = this.props
-    const { next } = this.props.users.links
+    const { usersList } = this.props;
+    const { next } = this.props.users.links;
 
-    usersList({ link: next.url })
-  }
+    usersList({ link: next.url });
+  };
 
   handlePrevButtonClick = () => {
-    const { usersList } = this.props
-    const { prev } = this.props.users.links
+    const { usersList } = this.props;
+    const { prev } = this.props.users.links;
 
-    usersList({ link: prev.url })
-  }
+    usersList({ link: prev.url });
+  };
 
   renderControls() {
-    const { extra, ...restFilters } = this.props.filters
-    const isFiltered = !(_.isEmpty(restFilters) && _.isEmpty(extra))
+    const { extra, ...restFilters } = this.props.filters;
+    const isFiltered = !(_.isEmpty(restFilters) && _.isEmpty(extra));
 
     return (
       <div className={styles.controls}>
         <Row>
           <Col span={12} className={styles.controlsLeft}>
-            <Link to='/users/create'>
-              <Button type='primary'>Create</Button>
+            <Link to="/users/create">
+              <Button type="primary">Create</Button>
             </Link>
             <Upload
+              className={styles.upload}
               showUploadList={false}
               customRequest={(e) => {
-                let reader = new FileReader()
-                const { usersCreate } = this.props
+                let reader = new FileReader();
+                const { usersCreate } = this.props;
 
                 reader.onload = (e) => {
-                  const json = e.target.result
+                  const json = e.target.result;
                   try {
-                    const users = JSON.parse(json)
+                    const users = JSON.parse(json);
                     users.forEach(async(user) => {
                       try {
-                        await usersCreate(user)
-                      } catch(e) {
-                        message.error(e.message)
+                        await usersCreate(user);
+                      } catch (e) {
+                        message.error(e.message);
                       }
-                    })
-                  } catch(e) {
-                    message.error('Invalid JSON')
+                    });
+                  } catch (e) {
+                    message.error("Invalid JSON");
                   }
-                }
-                reader.readAsText(e.file, 'UTF-8')
+                };
+                reader.readAsText(e.file, "UTF-8");
               }}
             >
               <Button>
-                <Icon type='upload' /> Import
+                <Icon type="upload" /> Import
               </Button>
             </Upload>
           </Col>
@@ -130,31 +130,33 @@ class UsersTable extends Component {
             <Button
               onClick={this.props.handleResetFilters}
               disabled={!isFiltered}
-            >Reset filters</Button>
+            >
+              Reset filters
+            </Button>
           </Col>
         </Row>
       </div>
-    )
+    );
   }
 
   renderTable() {
-    const { users, links } = this.props.users
-    const { prev, next } = links
+    const { users, links } = this.props.users;
+    const { prev, next } = links;
 
     const columns = [
       {
-        title: 'ID',
-        dataIndex: 'id',
+        title: "ID",
+        dataIndex: "id",
       },
       {
-        title: 'Name',
-        dataIndex: 'name',
-        ...textFilter('name', this.props),
+        title: "Name",
+        dataIndex: "name",
+        ...textFilter("name", this.props),
       },
       {
-        title: 'Email',
-        dataIndex: 'email',
-        ...textFilter('email', this.props),
+        title: "Email",
+        dataIndex: "email",
+        ...textFilter("email", this.props),
       },
       // TODO: read settings from server
       // to know that country field is present in extra
@@ -175,24 +177,24 @@ class UsersTable extends Component {
       //   ),
       // },
       {
-        title: 'Activated',
-        dataIndex: 'isActivated',
+        title: "Activated",
+        dataIndex: "isActivated",
         render: (data) => {
-          return (
-            data
-              ? <Icon type='check' style={{ 'color': 'green' }} />
-              : <Icon type='close' style={{ 'color': 'red' }}/>
-          )
+          return data ? (
+            <Icon type="check" style={{ color: "green" }} />
+          ) : (
+            <Icon type="close" style={{ color: "red" }} />
+          );
         },
         ...radioFilter(
-          'isActivated',
+          "isActivated",
           [
             {
-              data: 'Yes',
+              data: "Yes",
               value: true,
             },
             {
-              data: 'No',
+              data: "No",
               value: false,
             },
           ],
@@ -200,37 +202,37 @@ class UsersTable extends Component {
         ),
       },
       {
-        title: 'Registered',
-        dataIndex: 'createdAt',
+        title: "Registered",
+        dataIndex: "createdAt",
         render: (data) => <Moment fromNow>{data}</Moment>,
-        ...dateRangeFilter('createdAt', this.props),
+        ...dateRangeFilter("createdAt", this.props),
       },
       {
-        title: 'Action',
+        title: "Action",
         render: (data, record) => (
           <span>
             <Link to={`users/${record.id}/edit`}>
               <span>Edit</span>
             </Link>
-            <Divider type='vertical' />
+            <Divider type="vertical" />
             <Popconfirm
               title={`Are you sure that you want to delete user "${record.name}"?`}
-              okText='Yes'
-              cancelText='No'
-              placement='leftTop'
+              okText="Yes"
+              cancelText="No"
+              placement="leftTop"
               onConfirm={this.handleUserDelete(record.id)}
             >
-              <a href='javascript:;'>Delete</a>
+              <a href="javascript:;">Delete</a>
             </Popconfirm>
           </span>
         ),
       },
-    ]
+    ];
 
     return (
       <div>
         <Table
-          rowKey='id'
+          rowKey="id"
           bordered={true}
           columns={columns}
           dataSource={users}
@@ -243,11 +245,11 @@ class UsersTable extends Component {
           hasPrev={!!prev}
         />
       </div>
-    )
+    );
   }
 
   render() {
-    const { loading } = this.props.usersListResult
+    const { loading } = this.props.usersListResult;
 
     return (
       <Spin spinning={loading}>
@@ -256,22 +258,22 @@ class UsersTable extends Component {
           {this.renderTable()}
         </div>
       </Spin>
-    )
+    );
   }
 }
 
-
-const mapStateToProps = state => ({
-    users: state.users,
-    usersListResult: state.api.effects.users.list,
-    usersDeleteResult: state.api.effects.users.delete,
+const mapStateToProps = (state) => ({
+  users: state.users,
+  usersListResult: state.api.effects.users.list,
+  usersDeleteResult: state.api.effects.users.delete,
 });
 
-const mapDispatchToProps = dispatch => ({
-    usersList: dispatch.users.list,
-    usersDelete: dispatch.users.delete,
-    usersCreate: dispatch.users.create,
+const mapDispatchToProps = (dispatch) => ({
+  usersList: dispatch.users.list,
+  usersDelete: dispatch.users.delete,
+  usersCreate: dispatch.users.create,
 });
 
-
-export default withFilters(connect(mapStateToProps, mapDispatchToProps)(UsersTable))
+export default withFilters(
+  connect(mapStateToProps, mapDispatchToProps)(UsersTable),
+);
