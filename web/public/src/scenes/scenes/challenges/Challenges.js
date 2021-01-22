@@ -40,6 +40,12 @@ class Challenges extends Component {
       [prefixClass + '--solved']: user.isSolved
     });
 
+    const difficultyMap = {
+      easy: "простое",
+      medium: "среднее",
+      hard: "сложное",
+    }
+
     return (
       <Link key={index} to={`/challenges/${challenge.id}`}>
         <div className={className}>
@@ -50,7 +56,7 @@ class Challenges extends Component {
               challenge.difficulty
             }`}
           >
-            {challenge.difficulty}
+            {difficultyMap[challenge.difficulty]}
           </div>
           <div className={`${prefixClass}-solutions`}>
             {meta.solutionsCount}

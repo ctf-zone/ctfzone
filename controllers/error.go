@@ -70,8 +70,8 @@ var (
 	ErrAccessDenied          = &Error{Code: 403, Msg: "Access denied"}
 	ErrInvalidCSRFToken      = &Error{Code: 403, Msg: "Invalid CSRF token"}
 	ErrInvalidCaptcha        = &Error{Code: 403, Msg: "Invalid captcha"}
-	ErrCtfNotStarted         = &Error{Code: 403, Msg: "CTF hasn't started yet"}
-	ErrCtfAlreadyEnded       = &Error{Code: 403, Msg: "CTF has already ended"}
+	ErrCtfNotStarted         = &Error{Code: 403, Msg: "Соревнование еще не началось"}
+	ErrCtfAlreadyEnded       = &Error{Code: 403, Msg: "Соревнование закончилось"}
 	ErrPathNotFound          = &Error{Code: 404, Msg: "Path not found"}
 	ErrTokenNotFound         = &Error{Code: 404, Msg: "Token not found"}
 	ErrChallengeNotFound     = &Error{Code: 404, Msg: "Challenge not found"}
