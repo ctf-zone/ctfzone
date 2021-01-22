@@ -48,7 +48,7 @@ class Challenge extends Component {
       if (e.status === 400 || e.status === 409) {
         errors = e.errors || {};
       } else if (e.status === 418) {
-        errors = { flag: ['Invalid flag'] };
+        errors = { flag: ['Неправильный флаг'] };
       } else if (e.status === 403) {
         errors = { flag: [e.message] };
       }
@@ -91,6 +91,11 @@ class Challenge extends Component {
       [`${prefixClass}--solved`]: user.isSolved
     });
     const solved = user.isSolved ? 'ctf-page--challenge--solved' : '';
+    const difficultyMap = {
+      easy: "простое",
+      medium: "среднее",
+      hard: "сложное",
+    }
 
     return (
       <Page type={`challenge ${solved}`} title={challenge.title}>
@@ -106,7 +111,7 @@ class Challenge extends Component {
               })}
             </div>
             <div className={`${prefixClass}-difficulty`}>
-              {challenge.difficulty}
+              {difficultyMap[challenge.difficulty]}
             </div>
             <div className={`${prefixClass}-solutions`}>
               {meta.solutionsCount}

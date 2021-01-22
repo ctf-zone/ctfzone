@@ -13,7 +13,7 @@ code {
     monospace;
 }
 
-@import url('https://fonts.googleapis.com/css?family=Inconsolata|Quicksand');
+@import url('https://fonts.googleapis.com/css?family=Fira+Sans:400,400i,700,700i|Inconsolata:400,700&subset=cyrillic');
 @import url('https://use.fontawesome.com/releases/v5.3.1/css/all.css');
 
 /* ============= */
@@ -64,7 +64,7 @@ html,
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Inconsolata', monospace;
+  font-family: 'Fira Sans', monospace;
   color: $color-text-light;
 }
 
@@ -151,7 +151,6 @@ a {
     border-radius: $border-radius;
     text-align: center;
     text-transform: uppercase;
-    font-family: 'Inconsolata', monospace;
     font-size: 14px;
     cursor: pointer;
 
@@ -260,7 +259,7 @@ a {
     &-logo {
       width: 60px;
       height: 60px;
-      background-image: url('./images/logo.svg');
+      background-image: url('./images/logo.png');
       background-size: 60px 60px;
     }
 

@@ -34,14 +34,14 @@ class Scoreboard extends Component {
     const { items: scores } = this.props.scores;
 
     return (
-      <Page title="Scoreboard" type="scoreboard">
+      <Page title="Таблица результатов" type="scoreboard">
         <table className="ctf-scores">
           <thead>
             <tr>
-              <th>Rank</th>
-              <th>Team</th>
-              <th>Score</th>
-              <th>Last flag submit</th>
+              <th>Позиция</th>
+              <th>Имя</th>
+              <th>Очки</th>
+              <th>Последняя сдача флага</th>
             </tr>
           </thead>
           <tbody>

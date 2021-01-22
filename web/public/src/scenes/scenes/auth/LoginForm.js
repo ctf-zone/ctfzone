@@ -31,17 +31,13 @@ class LoginForm extends Component {
           rules: [
             {
               required: true,
-              message: 'Email is required'
-            },
-            {
-              type: 'email',
-              message: 'Invalid email'
+              message: 'Необходимо ввести название команды'
             }
           ]
         })(
           <input
             type="text"
-            placeholder="Email"
+            placeholder="Название команды"
             ref={el => (this.emailInput = el)}
           />
         )}
@@ -57,14 +53,10 @@ class LoginForm extends Component {
           rules: [
             {
               required: true,
-              message: 'Password is required'
-            },
-            {
-              min: 8,
-              message: 'Password is too short'
+              message: 'Поле пароль обязательное'
             }
           ]
-        })(<input type="password" placeholder="Password" />)}
+        })(<input type="password" placeholder="Пароль" />)}
       </FormItem>
     );
   }
@@ -76,7 +68,7 @@ class LoginForm extends Component {
 
     return (
       <FormItem>
-        <Button disabled={!canSubmit} value="Log In" />
+        <Button disabled={!canSubmit} value="Вход" />
       </FormItem>
     );
   }

@@ -27,10 +27,10 @@ class FlagForm extends Component {
           rules: [
             {
               required: true,
-              message: 'Flag is required'
+              message: 'Поле флаг обязательное'
             }
           ]
-        })(<input type="text" placeholder="Flag" />)}
+        })(<input type="text" placeholder="Флаг" />)}
       </FormItem>
     );
   }

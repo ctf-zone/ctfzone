@@ -34,18 +34,18 @@ class Main extends Component {
           </Link>
           <Nav
             leftItems={[
-              { title: 'News', path: '/news' },
-              { title: 'Rules', path: '/rules' },
-              { title: 'Scoreboard', path: '/scoreboard' },
+              { title: 'Новости', path: '/news'},
+              { title: 'Правила', path: '/rules' },
+              { title: 'Таблица результатов', path: '/scoreboard'},
               {
-                title: 'Challenges',
+                title: 'Задания',
                 path: '/challenges',
                 hidden: !isLoggedIn || countdown
               }
             ]}
             rightItems={[
-              { title: 'Log In', path: '/auth/login', hidden: isLoggedIn },
-              { title: 'Log Out', path: '/auth/logout', hidden: !isLoggedIn }
+              { title: 'Вход', path: '/auth/login', hidden: isLoggedIn},
+              { title: 'Выход', path: '/auth/logout', hidden: !isLoggedIn }
             ]}
             rightPrefix={isLoggedIn ? <UserStats /> : null}
           />
@@ -84,7 +84,7 @@ class Main extends Component {
   renderFooter() {
     return (
       <Layout.Footer className="ctf-footer">
-        <Layout.Container>M⭑CTF 2018</Layout.Container>
+        <Layout.Container>Cyber Polygon 2021</Layout.Container>
       </Layout.Footer>
     );
   }

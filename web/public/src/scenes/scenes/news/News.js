@@ -80,7 +80,7 @@ class News extends Component {
     const countdown = contestStatus.status === 'countdown';
 
     return (
-      <Page title="News" type="news">
+      <Page title="Новости" type="news">
         {countdown ? (
           <div>
             <Countdown

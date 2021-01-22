@@ -5,32 +5,32 @@ import { Page } from '../../../components';
 
 // TODO: get from API
 const rules = `
-Online-stage, starts on 20.10.2018 at 09:00 UTC and will last for 24 hours.
-Stage format – Jeopardy. Top 10 teams will be invited to the final.
+Киберполигон стартует 18.12.2018 в 11:00 по МСК и продлится 8 часов до 19.00.
 
-Rules:
+В рамках киберполигона участникам предстоит почувствовать себя специалистами отдела реагирования на инциденты кибербезопасности, и решать рядовые задачи этого подразделения.
 
-- register;
-- tasks will be available at the link;
-- those who earn more points wins the CTF;
-- in case of equal points, the winner will be the one who earned them first.
+Правила:
 
-It's forbidden to:
+- Для успешного выполнения задания, необходимо сдать флаг;
+- Игрок заработавший наибольшее количество очков побеждает в киберполигоне;
+- В случае равенства очков, победителем объявляется тот, кто сдал задачии раньше соперника;
 
-- attack the organizer's infrastructure;
-- generate large amounts of traffic (DDoS);
-- attack computers of the jury or other participants;
-- share flags with other participants.
+Запрещено:
 
-The amount of points that every team gets for each task depends on how many times this task was solved by all teams.
+- Атаковать инфраструктуру организаторов;
+- Генерировать большой объем трафика (DDoS);
+- Атаковать компьютеры организаторов или других участников;
+- Делиться флагами с другими участниками;
 
-Each task is marked as easy, medium or hard.
-This difficulty level doesn’t affect scoring formula of the task,
-which only depends on the amount of teams that has submitted the flag.
+Количество баллов, которое каждый участник получает за каждую задачу, зависит от того, сколько раз эта задача была решена всеми участниками.
 
-Flag format: \`mctf{[a-f0-9]{32}}\`
+Каждое задание помечается как легкое, среднее или сложное. Этот уровень сложности не влияет на формулу оценки задачи, которая зависит только от количества участников, представивших флаг.
 
-The organizers reserve the right to disqualify participants for violating the rules.
+Флаг - строка, последовательность символов в заданном формате, содержащаяся в каждом задании киберполигона.
+
+Формат флага: \`polygon{a4f86f7bfc24194b276c22e0ef158197}\`
+
+Организаторы оставляют за собой право дисквалифицировать участников за нарушение правил.
 `;
 
 class Rules extends Component {
@@ -40,7 +40,7 @@ class Rules extends Component {
 
   render() {
     return (
-      <Page title="Rules" type="rules">
+      <Page title="Правила" type="rules">
         <ReactMarkdown source={rules} />
       </Page>
     );

@@ -80,7 +80,7 @@ class Challenges extends Component {
     const { items: challenges } = this.props.challenges;
 
     return (
-      <Page title="Challenges" type="challenges">
+      <Page title="Задания" type="challenges">
         {Object.values(challenges).map(this.renderChallenge)}
       </Page>
     );

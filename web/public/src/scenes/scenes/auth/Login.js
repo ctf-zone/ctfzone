@@ -50,7 +50,7 @@ class Login extends Component {
     const { activationError } = this.state;
 
     return (
-      <Window title="Log In" type="login">
+      <Window title="Вход" type="login">
         {activationError ? (
           <div className="ctf-form-message">
             Account is not activated.
