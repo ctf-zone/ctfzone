@@ -42,7 +42,7 @@ class FlagForm extends Component {
 
     return (
       <FormItem>
-        <Button disabled={!canSubmit} value="Submit" />
+        <Button disabled={!canSubmit} value="Отправить" />
       </FormItem>
     );
   }
