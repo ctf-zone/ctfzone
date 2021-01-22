@@ -27,6 +27,9 @@
     },
     "isLocked": {
       "type": "boolean"
+    },
+    "dependsOn": {
+      "type": "number"
     }
   },
   "additionalProperties": false,

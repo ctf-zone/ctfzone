@@ -78,6 +78,7 @@ var (
 	ErrAnnouncementNotFound  = &Error{Code: 404, Msg: "Announcement not found"}
 	ErrUserNotFound          = &Error{Code: 404, Msg: "User not found"}
 	ErrDuplicate             = &Error{Code: 409, Msg: "Duplicate entry"}
+	ErrConditionFailed       = &Error{Code: 412, Msg: "Необходимо сначала решить зависимое задание"}
 	ErrInvalidFlag           = &Error{Code: 418, Msg: "Invalid flag"}
 	ErrAccountIsNotActivated = &Error{Code: 422, Msg: "Account is not activated"}
 	ErrInternal              = &Error{Code: 500, Msg: "Internal error"}

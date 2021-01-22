@@ -60,6 +60,7 @@ challenges (
   difficulty  difficulty      NOT NULL,
   flag_hash   TEXT            NOT NULL,
   is_locked   BOOLEAN         NOT NULL,
+  depends_on  INTEGER         REFERENCES challenges (id),
   created_at  TIMESTAMP       NOT NULL,
   updated_at  TIMESTAMP       NOT NULL
 );

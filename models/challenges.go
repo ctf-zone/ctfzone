@@ -29,6 +29,8 @@ type Challenge struct {
 	Flag        string         `db:"-"                    json:"flag,omitempty"`
 	FlagHash    string         `db:"flag_hash"            json:"-"`
 	IsLocked    bool           `db:"is_locked"            json:"isLocked"`
+	IsAvailable bool           `db:"is_available"         json:"-"`
+	DependsOn   *int64         `db:"depends_on"           json:"dependsOn,omitempty"`
 	CreatedAt   time.Time      `db:"created_at"           json:"createdAt"`
 	UpdatedAt   time.Time      `db:"updated_at"           json:"updatedAt"`
 }
@@ -126,9 +128,31 @@ func (r *Repository) ChallengesInsert(o *Challenge) error {
 	o.FlagHash = crypto.HashFlag(o.Flag)
 	o.Flag = ""
 
+	fields := []string{
+		"title",
+		"categories",
+		"points",
+		"description",
+		"difficulty",
+		"flag_hash",
+		"is_locked",
+		"created_at",
+		"updated_at",
+	}
+
+	if o.DependsOn != nil {
+		fields = append(fields, "depends_on")
+	}
+
+	placeholders := make([]string, 0)
+
+	for _, f := range fields {
+		placeholders = append(placeholders, ":"+f)
+	}
+
 	stmt, err := r.db.PrepareNamed(
-		"INSERT INTO challenges (title, categories, points, description, difficulty, flag_hash, is_locked, created_at, updated_at) " +
-			"VALUES(:title, :categories, :points, :description, :difficulty, :flag_hash, :is_locked, :created_at, :updated_at) " +
+		"INSERT INTO challenges (" + strings.Join(fields, ", ") + ") " +
+			"VALUES(" + strings.Join(placeholders, ", ") + ") " +
 			"RETURNING id")
 
 	if err != nil {
@@ -149,6 +173,10 @@ func (r *Repository) ChallengesUpdate(o *Challenge) error {
 		"difficulty = :difficulty, " +
 		"is_locked = :is_locked, " +
 		"updated_at = :updated_at"
+
+	if o.DependsOn != nil {
+		query += ", depends_on = :depends_on "
+	}
 
 	if o.Flag != "" {
 		o.FlagHash = crypto.HashFlag(o.Flag)
@@ -180,6 +208,8 @@ func challengesQuery(cfg *config.Scoring, options challengesListOptions) (string
 		"challenges.description, " +
 		"challenges.difficulty, " +
 		"challenges.is_locked, " +
+		"challenges.depends_on, " +
+		"challenges.flag_hash, " +
 		"challenges.created_at, " +
 		"challenges.updated_at, "
 
@@ -218,20 +248,23 @@ func challengesQuery(cfg *config.Scoring, options challengesListOptions) (string
 	if options.UserID != 0 {
 		query += ", " +
 			"COALESCE(:user_id = ANY (challenges_solutions.users), FALSE) AS is_solved, " +
-			"COALESCE(:user_id = ANY (challenges_likes.users), FALSE) AS is_liked"
+			"COALESCE(:user_id = ANY (challenges_likes.users), FALSE) AS is_liked, " +
+			"(NOT challenges.is_locked AND CASE WHEN challenges.depends_on IS NOT NULL THEN COALESCE(:user_id = ANY (dependencies.users), FALSE) ELSE TRUE END) AS is_available "
+
 		params["user_id"] = options.UserID
 	}
 
 	query += " FROM challenges " +
 		"LEFT JOIN challenges_solutions ON challenges_solutions.challenge_id = challenges.id " +
+		"LEFT JOIN challenges_solutions as dependencies ON dependencies.challenge_id = challenges.depends_on " +
 		"LEFT JOIN challenges_likes ON challenges_likes.challenge_id = challenges.id " +
 		"LEFT JOIN challenges_hints ON challenges_hints.challenge_id = challenges.id "
 
 	// Exclude locked by default to prevent
 	// showing them accidently to users.
 	if !options.IncludeLocked {
-		query += "WHERE is_locked = :is_locked"
-		params["is_locked"] = false
+		query = fmt.Sprintf("SELECT * FROM (%s) as q WHERE is_available = :is_available OR is_solved = TRUE", query)
+		params["is_available"] = true
 	}
 
 	return query, params

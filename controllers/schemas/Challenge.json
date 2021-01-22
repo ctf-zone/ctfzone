@@ -28,6 +28,9 @@
     "isLocked": {
       "type": "boolean"
     },
+    "dependsOn": {
+      "type": "number"
+    },
     "createdAt": {
       "type": "string",
       "format": "date-time"

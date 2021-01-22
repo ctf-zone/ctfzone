@@ -1,5 +1,5 @@
-@import '~codemirror/lib/codemirror.css';
-@import '~codemirror/theme/idea.css';
+@import "~codemirror/lib/codemirror.css";
+@import "~codemirror/theme/idea.css";
 
 .description-edit {
   border: 1px solid var(--field-border-color);

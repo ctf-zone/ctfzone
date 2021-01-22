@@ -25,6 +25,7 @@ class ChallengeForm extends Component {
     onChange: PropTypes.func.isRequired,
     fields: PropTypes.object.isRequired,
     categories: PropTypes.array.isRequired,
+    challenges: PropTypes.array.isRequired,
     filesUpload: PropTypes.func,
 
     // @form
@@ -258,6 +259,29 @@ class ChallengeForm extends Component {
     )
   }
 
+  renderDependsOnField({ getFieldDecorator }) {
+    const { challenges } = this.props;
+
+    return (
+      <Form.Item
+        hasFeedback
+        label='DependsOn'
+        {...this.formItemLayout}
+      >
+        {getFieldDecorator('dependsOn')(
+          <Select
+            optionFilterProp='children'
+            allowClear
+          >
+            {challenges.map(({ challenge }) => (
+              <Select.Option key={challenge.id} value={challenge.id}>{challenge.title}</Select.Option>
+            ))}
+          </Select>,
+        )}
+      </Form.Item>
+    )
+  }
+
   renderSubmitButton({ isFieldTouched, getFieldValue, getFieldsError }) {
     const { isEdit } = this.props
     let required = [ 'title', 'points' ]
@@ -303,6 +327,7 @@ class ChallengeForm extends Component {
         }
         {this.renderFlagField(form)}
         {this.renderIsLockedField(form)}
+        {this.renderDependsOnField(form)}
         {this.renderSubmitButton(form)}
       </Form>
     )
@@ -312,7 +337,7 @@ class ChallengeForm extends Component {
 const mapStateToProps = () => ({});
 
 const mapDispatchToProps = (dispatch) => ({
-    filesUpload: dispatch.files.upload,
+  filesUpload: dispatch.files.upload,
 });
 
 const onFieldsChange = (props, changedFields, allFields) => {

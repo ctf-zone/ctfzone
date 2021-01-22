@@ -14,11 +14,13 @@ class ChallengeCreateEdit extends Component {
   static propTypes = {
     // @connect
     challenge: PropTypes.object.isRequired,
+    challenges: PropTypes.array.isRequired,
     game: PropTypes.object.isRequired,
     gameGet: PropTypes.func.isRequired,
     challengesGet: PropTypes.func.isRequired,
     challengesCreate: PropTypes.func.isRequired,
     challengesUpdate: PropTypes.func.isRequired,
+    challengesList: PropTypes.func.isRequired,
 
     // @withRouter
     match: PropTypes.object.isRequired,
@@ -30,7 +32,7 @@ class ChallengeCreateEdit extends Component {
   }
 
   async componentDidMount() {
-    const { game, gameGet } = this.props
+    const { game, gameGet, challengesList } = this.props
 
     if (_.isEmpty(game)) {
       await gameGet()
@@ -45,6 +47,8 @@ class ChallengeCreateEdit extends Component {
         fields: addValues(fields, challenge.challenge),
       }))
     }
+
+    challengesList({});
   }
 
   static defaultState = {
@@ -81,7 +85,7 @@ class ChallengeCreateEdit extends Component {
   }
 
   render() {
-    const { challenge, game } = this.props
+    const { challenge, challenges, game } = this.props
     const isEdit = !!this.props.match.params.challengeId
     const { fields } = this.state
 
@@ -104,6 +108,7 @@ class ChallengeCreateEdit extends Component {
           onChange={this.handleChange}
           fields={fields}
           categories={game.categories || []}
+          challenges={challenges || []}
         />
       </div>
     )
@@ -112,12 +117,14 @@ class ChallengeCreateEdit extends Component {
 
 const mapStateToProps = (state) => ({
   challenge: state.challenges.challenge,
+  challenges: state.challenges.challenges,
   game: state.game,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   challengesCreate: dispatch.challenges.create,
   challengesUpdate: dispatch.challenges.update,
+  challengesList: dispatch.challenges.list,
   challengesGet: dispatch.challenges.get,
   gameGet: dispatch.game.get,
 });

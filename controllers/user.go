@@ -15,7 +15,7 @@ import (
 )
 
 // UserSolutionsCreate handles challenge solution request
-func UserSolutionsCreate(db *models.Repository, sm *scs.Manager) http.HandlerFunc {
+func UserSolutionsCreate(cfg *config.Scoring, db *models.Repository, sm *scs.Manager) http.HandlerFunc {
 
 	type Request struct {
 		Flag string `json:"flag"`
@@ -53,13 +53,18 @@ func UserSolutionsCreate(db *models.Repository, sm *scs.Manager) http.HandlerFun
 			return
 		}
 
-		t, err := db.ChallengesOneByID(challengeID)
-
+		t, err := db.ChallengesOneByIDE(cfg, challengeID, models.ChallengesIncludeUser(userID))
 		if err == sql.ErrNoRows {
 			handleError(w, r, ErrChallengeNotFound)
 			return
 		} else if err != nil {
 			handleError(w, r, ErrInternal.SetError(err))
+			return
+		}
+
+		s, _ := db.SolutionsOneByID(userID, challengeID)
+		if s != nil {
+			handleError(w, r, ErrDuplicate)
 			return
 		}
 
@@ -79,7 +84,7 @@ func UserSolutionsCreate(db *models.Repository, sm *scs.Manager) http.HandlerFun
 			return
 		}
 
-		s := &models.Solution{
+		s = &models.Solution{
 			UserID:      userID,
 			ChallengeID: challengeID,
 		}

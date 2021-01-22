@@ -10,11 +10,9 @@
       "$ref": "file:///ChallengeMeta.json"
     },
     "user": {
-        "$ref": "file:///ChallengeUser.json"
+      "$ref": "file:///ChallengeUser.json"
     }
   },
   "additionalProperties": false,
-  "required": [
-    "challenge"
-  ]
+  "required": ["challenge"]
 }

@@ -229,7 +229,7 @@ class ChallengesTable extends Component {
       {
         title: 'Categories',
         dataIndex: 'challenge.categories',
-        width: '25%',
+        width: '21%',
         render: (data) => data.map((category, i) => <Tag color='blue' key={i}>{category}</Tag>),
         ...selectFilter(
           'categories',
@@ -246,7 +246,7 @@ class ChallengesTable extends Component {
       {
         title: 'Locked',
         dataIndex: 'challenge.isLocked',
-        width: '10%',
+        width: '7%',
         render: (data) => {
           return (data
             ? <Icon type='lock' />
@@ -267,6 +267,11 @@ class ChallengesTable extends Component {
           ],
           this.props,
         ),
+      },
+      {
+        title: 'Depends On',
+        dataIndex: 'challenge.dependsOn',
+        width: '7%',
       },
       {
         title: 'Action',

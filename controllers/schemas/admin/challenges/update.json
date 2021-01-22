@@ -27,14 +27,11 @@
     },
     "isLocked": {
       "type": "boolean"
+    },
+    "dependsOn": {
+      "type": "number"
     }
   },
   "additionalProperties": false,
-  "required": [
-    "title",
-    "categories",
-    "points",
-    "difficulty",
-    "isLocked"
-  ]
+  "required": ["title", "categories", "points", "difficulty", "isLocked"]
 }

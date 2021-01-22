@@ -145,7 +145,7 @@ func PublicRouter(cfg *config.Config, db *models.Repository,
 			r.Delete("/likes/{challengeId}", UserLikesDelete(db, sm))
 
 			r.With(validate("/UserSolutionsCreate.json"), during).
-				Post("/solutions/{challengeId}", UserSolutionsCreate(db, sm))
+				Post("/solutions/{challengeId}", UserSolutionsCreate(&cfg.Game.Scoring, db, sm))
 		})
 
 		r.Route("/scores", func(r chi.Router) {
