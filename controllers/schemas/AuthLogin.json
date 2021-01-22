@@ -3,17 +3,13 @@
   "description": "AuthLogin request schema",
   "type": "object",
   "properties": {
-    "email": {
-      "type": "string",
-      "format": "email"
+    "login": {
+      "type": "string"
     },
     "password": {
       "type": "string"
     }
   },
   "additionalProperties": false,
-  "required": [
-    "email",
-    "password"
-  ]
+  "required": ["login", "password"]
 }

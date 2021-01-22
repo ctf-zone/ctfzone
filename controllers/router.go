@@ -18,7 +18,6 @@ import (
 	"github.com/ctf-zone/ctfzone/internal/mailer"
 	"github.com/ctf-zone/ctfzone/middlewares/cntcheck"
 	"github.com/ctf-zone/ctfzone/middlewares/csrf"
-	"github.com/ctf-zone/ctfzone/middlewares/recaptcha"
 	"github.com/ctf-zone/ctfzone/middlewares/timecheck"
 	"github.com/ctf-zone/ctfzone/models"
 )
@@ -89,10 +88,10 @@ func PublicRouter(cfg *config.Config, db *models.Repository,
 		cntcheck.ErrorFunc(errorFunc(ErrInvalidContentType)))
 
 	// ReCaptcha
-	rc := recaptcha.New(
-		cfg.ReCaptcha.Secret,
-		recaptcha.Header(cfg.ReCaptcha.Header),
-		recaptcha.ErrorFunc(errorFunc(ErrInvalidCaptcha)))
+	// rc := recaptcha.New(
+	// 	cfg.ReCaptcha.Secret,
+	// 	recaptcha.Header(cfg.ReCaptcha.Header),
+	// 	recaptcha.ErrorFunc(errorFunc(ErrInvalidCaptcha)))
 
 	// Time check not before
 	notBeforeStart := timecheck.New(cfg.Game.StartTime(), timecheck.MaxTime,
@@ -115,22 +114,22 @@ func PublicRouter(cfg *config.Config, db *models.Repository,
 
 		r.Route("/auth", func(r chi.Router) {
 
-			r.With(
-				validate("/AuthRegister.json"),
-				conditional(rc, cfg.ReCaptcha.Enabled)).
-				Post("/register", AuthRegister(db, m))
+			// r.With(
+			// 	validate("/AuthRegister.json"),
+			// 	conditional(rc, cfg.ReCaptcha.Enabled)).
+			// 	Post("/register", AuthRegister(db, m))
 
 			r.With(validate("/AuthLogin.json")).
 				Post("/login", AuthLogin(db, sm))
 
-			r.With(validate("/AuthActivate.json")).
-				Post("/activate", AuthActivate(db))
+			// r.With(validate("/AuthActivate.json")).
+			// 	Post("/activate", AuthActivate(db))
 
-			r.With(validate("/AuthSendToken.json")).
-				Post("/send-token", AuthSendToken(db, m))
+			// r.With(validate("/AuthSendToken.json")).
+			// 	Post("/send-token", AuthSendToken(db, m))
 
-			r.With(validate("/AuthResetPassword.json")).
-				Post("/reset-password", AuthResetPassword(db))
+			// r.With(validate("/AuthResetPassword.json")).
+			// 	Post("/reset-password", AuthResetPassword(db))
 
 			r.With(isLoggedIn(sm)).Post("/logout", AuthLogout(sm))
 

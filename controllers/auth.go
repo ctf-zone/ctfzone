@@ -82,7 +82,7 @@ func AuthRegister(db *models.Repository, m mailer.Sender) http.HandlerFunc {
 func AuthLogin(db *models.Repository, sm *scs.Manager) http.HandlerFunc {
 
 	type Request struct {
-		Email    string `json:"email"`
+		Login    string `json:"login"`
 		Password string `json:"password"`
 	}
 
@@ -95,7 +95,7 @@ func AuthLogin(db *models.Repository, sm *scs.Manager) http.HandlerFunc {
 			return
 		}
 
-		u, err := db.UsersLogin(req.Email, req.Password)
+		u, err := db.UsersLogin(req.Login, req.Password)
 
 		if err != nil {
 			handleError(w, r, ErrInvalidCreds)

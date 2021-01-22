@@ -23,10 +23,10 @@ class LoginForm extends Component {
     this.props.onSubmit(getFieldsValue());
   };
 
-  renderEmailField({ getFieldDecorator, getFieldError }) {
+  renderEmailField({getFieldDecorator, getFieldError}) {
     return (
-      <FormItem errors={getFieldError('email')} label="Email">
-        {getFieldDecorator('email', {
+      <FormItem errors={getFieldError('login')} label="Login">
+        {getFieldDecorator('login', {
           initialValue: '',
           rules: [
             {
@@ -61,8 +61,8 @@ class LoginForm extends Component {
     );
   }
 
-  renderSubmitButton({ getFieldError, isFieldTouched }) {
-    const canSubmit = ['email', 'password'].reduce((result, field) => {
+  renderSubmitButton({getFieldError, isFieldTouched}) {
+    const canSubmit = ['login', 'password'].reduce((result, field) => {
       return result && isFieldTouched(field) && !getFieldError(field);
     }, true);
 

@@ -216,7 +216,7 @@ func (r *Repository) UsersOneByName(name string) (*User, error) {
 // UsersLogin returns user if email and login are correct and error otherwise.
 func (r *Repository) UsersLogin(email, password string) (*User, error) {
 
-	o, err := r.UsersOneByEmail(email)
+	o, err := r.UsersOneByName(email)
 
 	if err != nil {
 		// TODO: check
