@@ -109,7 +109,7 @@ class UsersTable extends Component {
                     const users = JSON.parse(json);
                     users.forEach(async(user) => {
                       try {
-                        await usersCreate(user);
+                        await usersCreate(user, { throw: true });
                       } catch (e) {
                         message.error(e.message);
                       }
@@ -222,7 +222,7 @@ class UsersTable extends Component {
               placement="leftTop"
               onConfirm={this.handleUserDelete(record.id)}
             >
-              <a href="javascript:;">Delete</a>
+              <a href="#">Delete</a>
             </Popconfirm>
           </span>
         ),

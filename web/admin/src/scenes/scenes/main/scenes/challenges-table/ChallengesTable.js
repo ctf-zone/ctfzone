@@ -13,6 +13,8 @@ import {
   Popconfirm,
   Divider,
   Icon,
+  Upload,
+  message,
 } from 'antd'
 
 import {
@@ -32,6 +34,8 @@ class ChallengesTable extends Component {
     challenges: PropTypes.object.isRequired,
     game: PropTypes.object.isRequired,
     challengesList: PropTypes.func.isRequired,
+    challengesCreate: PropTypes.func.isRequired,
+    challengesUpdate: PropTypes.func.isRequired,
     challengesDelete: PropTypes.func.isRequired,
     challengesListResult: PropTypes.object.isRequired,
     gameGet: PropTypes.func.isRequired,
@@ -43,6 +47,10 @@ class ChallengesTable extends Component {
     handleResetFilters: PropTypes.func,
     isFiltered: PropTypes.func,
   }
+
+  state = {
+    selectedRowKeys: [],
+  };
 
   componentDidMount() {
     const { challengesList, gameGet } = this.props
@@ -80,8 +88,58 @@ class ChallengesTable extends Component {
     challengesList({ link: prev.url })
   }
 
+  handleSelectChange = (selectedRowKeys) => {
+    this.setState({ selectedRowKeys });
+  }
+
+  handleUnlockClick = () => {
+    const { challengesUpdate, challengesList, filters } = this.props;
+    const { challenges } = this.props.challenges;
+    const { selectedRowKeys } = this.state;
+
+    challenges.forEach(async({ challenge }) => {
+      if (selectedRowKeys.includes(challenge.id)) {
+        try {
+          const data = { ...challenge, isLocked: false };
+          delete data.createdAt;
+          delete data.updatedAt;
+          await challengesUpdate(data, { throw: true });
+          await challengesList({ filters });
+        } catch (e) {
+          message.error(e.message);
+        }
+      }
+    })
+
+    this.setState({ selectedRowKeys: [] })
+  }
+
+  handleLockClick = () => {
+    const { challengesUpdate, challengesList, filters } = this.props;
+    const { challenges } = this.props.challenges;
+    const { selectedRowKeys } = this.state;
+
+    challenges.forEach(async({ challenge }) => {
+      if (selectedRowKeys.includes(challenge.id)) {
+        try {
+          const data = { ...challenge, isLocked: true };
+          delete data.createdAt;
+          delete data.updatedAt;
+          await challengesUpdate(data, { throw: true });
+          await challengesList({ filters });
+        } catch (e) {
+          message.error(e.message);
+        }
+      }
+    })
+
+    this.setState({ selectedRowKeys: [] })
+  }
+
+
   renderControls() {
     const { extra, ...restFilters } = this.props.filters
+    const { selectedRowKeys } = this.state;
     const isFiltered = !(_.isEmpty(restFilters) && _.isEmpty(extra))
 
     return (
@@ -91,6 +149,53 @@ class ChallengesTable extends Component {
             <Link to='/challenges/create'>
               <Button type='primary'>Create</Button>
             </Link>
+            {selectedRowKeys.length > 0 ?
+              (
+                <Button style={{ marginLeft: '10px' }} onClick={this.handleUnlockClick}>
+                  <Icon type="primary" /> Unlock
+                </Button>
+              ) :
+              ''
+            }
+            {selectedRowKeys.length > 0 ?
+              (
+                <Button style={{ marginLeft: '10px' }} onClick={this.handleLockClick}>
+                  <Icon type="primary" /> Lock
+                </Button>
+              ) :
+              ''
+            }
+            <Upload
+              className={styles.upload}
+              showUploadList={false}
+              customRequest={(e) => {
+                let reader = new FileReader();
+                const { challengesCreate, challengesList, filters } = this.props;
+
+                reader.onload = async(e) => {
+                  const json = e.target.result;
+                  try {
+                    const challenges = JSON.parse(json);
+                    challenges.forEach(async(challenge) => {
+                      try {
+                        await challengesCreate(challenge, { throw: true });
+                      } catch (e) {
+                        const message = e.message;
+                        message.error(message);
+                      }
+                    });
+                    await challengesList({ filters });
+                  } catch (e) {
+                    message.error("Invalid JSON");
+                  }
+                };
+                reader.readAsText(e.file, "UTF-8");
+              }}
+            >
+              <Button>
+                <Icon type="upload" /> Import
+              </Button>
+            </Upload>
           </Col>
           <Col span={12} className={styles.controlsRight}>
             <Button
@@ -178,7 +283,7 @@ class ChallengesTable extends Component {
               placement='leftTop'
               onConfirm={this.handleChallengeDelete(record.challenge.id)}
             >
-              <a href='javascript:;'>Delete</a>
+              <a href='#'>Delete</a>
             </Popconfirm>
           </span>
         ),
@@ -190,6 +295,7 @@ class ChallengesTable extends Component {
       <div>
         <Table
           rowKey={(record) => record.challenge.id}
+          rowSelection={{ selectedRowKeys: this.state.selectedRowKeys, onChange: this.handleSelectChange }}
           bordered={true}
           columns={columns}
           dataSource={challenges}
@@ -229,6 +335,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   challengesList: dispatch.challenges.list,
   challengesDelete: dispatch.challenges.delete,
+  challengesCreate: dispatch.challenges.create,
+  challengesUpdate: dispatch.challenges.update,
   gameGet: dispatch.game.get,
 });
 

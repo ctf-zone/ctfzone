@@ -144,7 +144,7 @@ class AnnouncementsTable extends Component {
               placement='leftTop'
               onConfirm={this.handleAnnouncementDelete(record.id)}
             >
-              <a href='javascript:;'>Delete</a>
+              <a href='#'>Delete</a>
             </Popconfirm>
           </span>
         ),

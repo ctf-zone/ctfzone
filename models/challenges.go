@@ -271,7 +271,7 @@ func challengesApplyFilters(query string, params map[string]interface{}, f Chall
 	}
 
 	if len(cond) > 0 {
-		query += condPrefix(query) + strings.Join(cond, " AND ")
+		query += condPrefix(query) + " " + strings.Join(cond, " AND ")
 	}
 
 	return query, params

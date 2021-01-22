@@ -2,7 +2,12 @@
   padding: 10px 0;
 }
 
-th, td {
+.upload {
+  margin-left: 10px;
+}
+
+th,
+td {
   text-align: center !important;
 }
 

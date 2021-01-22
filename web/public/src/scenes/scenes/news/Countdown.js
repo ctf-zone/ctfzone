@@ -8,17 +8,15 @@ class Countdown extends Component {
   };
 
   state = {
-    intervalId: 0,
     currentTime: new Date().getTime()
   };
 
   componentDidMount() {
-    const intervalId = setInterval(this.updateTime, 1000);
-    this.setState({ intervalId });
+    this.intervalId = setInterval(this.updateTime, 1000);
   }
 
   componentWillUnmount() {
-    clearInterval(this.state.intervalId);
+    clearInterval(this.intervalId);
   }
 
   updateTime = () => {

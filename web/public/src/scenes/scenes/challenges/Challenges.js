@@ -12,19 +12,13 @@ class Challenges extends Component {
     challengesList: PropTypes.func
   };
 
-  state = {
-    intervalId: 0
-  };
-
   componentDidMount() {
     this.fetchData();
-
-    const intervalId = setInterval(this.fetchData, 30000);
-    this.setState({ intervalId });
+    this.intervalId = setInterval(this.fetchData, 30000);
   }
 
   componentWillUnmount() {
-    clearInterval(this.state.intervalId);
+    clearInterval(this.intervalId);
   }
 
   fetchData = () => {

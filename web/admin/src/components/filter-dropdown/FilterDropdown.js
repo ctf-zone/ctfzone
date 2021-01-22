@@ -18,8 +18,8 @@ class FilterDropdown extends Component {
           {this.props.children}
         </div>
         <div className={styles.buttons}>
-          <a href='javascript:;' className={styles.ok} onClick={this.props.onConfirm}>OK</a>
-          <a href='javascript:;' className={styles.reset} onClick={this.props.onReset}>Reset</a>
+          <a href='#' className={styles.ok} onClick={this.props.onConfirm}>OK</a>
+          <a href='#' className={styles.reset} onClick={this.props.onReset}>Reset</a>
         </div>
       </div>
     )

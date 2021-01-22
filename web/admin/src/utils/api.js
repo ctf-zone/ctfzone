@@ -10,7 +10,6 @@ export default axios.create({
 export class ApiError extends Error {
   constructor(status, message, errors) {
     super('ApiError')
-    Error.captureStackTrace(this, ApiError)
 
     this.status = status
     this.message = message
