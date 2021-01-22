@@ -1,15 +1,10 @@
-.layout {
-}
-
 .content {
   padding: 24px;
-  height: 100%;
 }
 
 .body {
   padding: 10px;
   background-color: #fff;
-  height: 100%;
 }
 
 .spin {
@@ -17,8 +12,4 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.main {
-  height: 100vh;
 }

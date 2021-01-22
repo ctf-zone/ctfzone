@@ -6,16 +6,35 @@ import { withRouter } from "react-router";
 
 class Nav extends Component {
   static propTypes = {
-    menuItems: PropTypes.array,
     location: PropTypes.object,
   };
 
-  static defaultProps = {
-    menuItems: [],
-  };
 
   render() {
-    const { menuItems, location } = this.props;
+    const { location } = this.props;
+
+    const menuItems = [
+      {
+        title: 'Users',
+        path: '/users',
+        icon: 'team',
+      },
+      {
+        title: 'Challenges',
+        path: '/challenges',
+        icon: 'bulb',
+      },
+      {
+        title: 'Announcements',
+        path: '/announcements',
+        icon: 'notification',
+      },
+      {
+        title: 'Files',
+        path: '/files',
+        icon: 'file',
+      },
+    ]
 
     let selectedKeys = [];
     menuItems.forEach((m, i) => {
@@ -29,30 +48,14 @@ class Nav extends Component {
 
     return (
       <Menu selectedKeys={selectedKeys} theme="dark" style={{ height: "100%" }}>
-        <Menu.Item key={0}>
-          <Link to="/users">
-            <Icon type="team" />
-            <span>Users</span>
-          </Link>
-        </Menu.Item>
-        <Menu.Item key={1}>
-          <Link to="/challenges">
-            <Icon type="bulb" />
-            <span>Challenges</span>
-          </Link>
-        </Menu.Item>
-        <Menu.Item key={2}>
-          <Link to="/announcements">
-            <Icon type="notification" />
-            <span>Announcements</span>
-          </Link>
-        </Menu.Item>
-        <Menu.Item key={3}>
-          <Link to="/users">
-            <Icon type="file" />
-            <span>Files</span>
-          </Link>
-        </Menu.Item>
+        {menuItems.map((item, i) => (
+          <Menu.Item key={i}>
+            <Link to={item.path}>
+              <Icon type={item.icon} />
+              <span>{item.title}</span>
+            </Link>
+          </Menu.Item>
+        ))}
       </Menu>
     );
   }

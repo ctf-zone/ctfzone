@@ -79,11 +79,11 @@ class Main extends Component {
 
   renderAll() {
     return (
-      <Layout className={styles.layout}>
+      <Layout style={{ minHeight:"100vh" }}>
 
         {this.renderSidebar()}
 
-        <Layout className={styles.main}>
+        <Layout>
 
           <Layout.Header>
             {this.renderHeader()}
