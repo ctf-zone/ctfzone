@@ -66,8 +66,6 @@ class Login extends Component {
           />
         )}
         <div className="ctf-form-links">
-          <Link to="/auth/send-token/reset">Reset Password</Link>
-          <Link to="/auth/signup">Sign Up</Link>
         </div>
       </Window>
     );

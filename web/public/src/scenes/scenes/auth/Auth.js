@@ -31,22 +31,6 @@ class Auth extends Component {
       <Switch>
         <Route exact path={`${match.url}/login`} component={Login} />
         <Route exact path={`${match.url}/logout`} component={Logout} />
-        <Route exact path={`${match.url}/signup`} component={Signup} />
-        <Route
-          exact
-          path={`${match.url}/send-token/:type(activate|reset)`}
-          component={SendToken}
-        />
-        <Route
-          exact
-          path={`${match.url}/reset-password/:token([0-9a-f]{64})`}
-          component={ResetPassword}
-        />
-        <Route
-          exact
-          path={`${match.url}/activate/:token([0-9a-f]{64})`}
-          component={Activate}
-        />
         <Route component={NotFound} />
       </Switch>
     );
