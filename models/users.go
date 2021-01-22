@@ -275,18 +275,18 @@ func usersApplyFilters(query string, f UsersFilters) (string, map[string]interfa
 	}
 
 	// Extra fields.
-	if f.Extra != nil {
-		// TODO: whitelist
-		for k, v := range f.Extra {
-			key := fmt.Sprintf("extra_%s_key", k)
-			value := fmt.Sprintf("extra_%s_value", k)
-			cond = append(cond, fmt.Sprintf("extra ->> :%s = :%s", key, value))
-			params[key] = k
-			params[value] = v
-		}
-		extra, _ := json.Marshal(f.Extra)
-		params["extra"] = extra
-	}
+	// if f.Extra != nil {
+	// TODO: whitelist
+	// for k, v := range f.Extra {
+	// 	key := fmt.Sprintf("extra_%s_key", k)
+	// 	value := fmt.Sprintf("extra_%s_value", k)
+	// 	cond = append(cond, fmt.Sprintf("extra ->> :%s = :%s", key, value))
+	// 	params[key] = k
+	// 	params[value] = v
+	// }
+	// extra, _ := json.Marshal(f.Extra)
+	// params["extra"] = extra
+	// }
 
 	if len(cond) > 0 {
 		query += " WHERE " + strings.Join(cond, " AND ")
