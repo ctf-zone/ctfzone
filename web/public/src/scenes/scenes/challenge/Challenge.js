@@ -123,7 +123,7 @@ class Challenge extends Component {
           </div>
           {user.isSolved ? (
             <div className={`${prefixClass}-solved-message`}>
-              Challenge solved.
+              Задание решено.
             </div>
           ) : (
             <div className={`${prefixClass}-flag`}>
