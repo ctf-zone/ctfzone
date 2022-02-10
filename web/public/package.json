@@ -8,7 +8,7 @@
     "classnames": "^2.2.6",
     "dayjs": "^1.10.3",
     "http-proxy-middleware": "^1.0.6",
-    "node-sass": "^4.0.0",
+    "node-sass": "^7.0.0",
     "npm-check-updates": "^10.2.5",
     "rc-form": "^2.4.12",
     "react": "^17.0.1",
